@@ -10,10 +10,33 @@ class schleuder::base {
     $schleuder_install_dir  = '/opt/schleuder'
   }
 
+  group{'schleuder':
+    ensure => present,
+  }
+
   git::clone{'schleuder':
     git_repo => 'git://git.immerda.ch/schleuder.git',
     projectroot => $schleuder_install_dir,
-    cloneddir_restrict_mode => false,
-    require => [ Package['tmail'], Package['ruby-gpgme'] ],
+    group => 'schleuder',
+    require => [ Group['schleuder'], Package['tmail'], Package['ruby-gpgme'] ],
+  }
+
+  file{ [ '/etc/schleuder', '/var/schleuderlists' ]:
+    ensure => directory,
+    require => Group['schleuder'],
+    owner => root, group => schleuder, mode => 0640;
+  }
+
+  file{'/etc/schleuder/default-list.conf':
+    source => [ "puppet://$server/files/schleuder/config/${fqdn}/default-list.conf",
+                "puppet://$server/files/schleuder/config/default-list.conf",
+                "puppet://$server/schleuder/config/default-list.conf" ],
+    owner => root, group => schleuder, mode => 0640;
+  }
+  file{'/etc/schleuder/schleuder.conf':
+    source => [ "puppet://$server/files/schleuder/config/${fqdn}/schleuder.conf",
+                "puppet://$server/files/schleuder/config/schleuder.conf",
+                "puppet://$server/schleuder/config/schleuder.conf" ],
+    owner => root, group => schleuder, mode => 0640;
   }
 }
