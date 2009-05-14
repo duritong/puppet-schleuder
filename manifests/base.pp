@@ -17,7 +17,7 @@ class schleuder::base {
   git::clone{'schleuder':
     git_repo => 'git://git.immerda.ch/schleuder.git',
     projectroot => $schleuder_install_dir,
-    group => 'schleuder',
+    cloneddir_group => 'schleuder',
     require => [ Group['schleuder'], Package['tmail'], Package['ruby-gpgme'] ],
   }
 
