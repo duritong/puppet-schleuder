@@ -7,7 +7,7 @@ class schleuder::base {
   }
 
   if $schleuder_install_dir == '' {
-    $schleuder_install_dir  = '/opt/schleuder',
+    $schleuder_install_dir  = '/opt/schleuder'
   }
 
   git::clone{'schleuder':
