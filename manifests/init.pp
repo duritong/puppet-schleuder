@@ -9,4 +9,14 @@
 # the Free Software Foundation.
 #
 
-class schleuder {}
+# The following variables are possible to tune this module:
+#
+# schleuder_enable_highline:
+#   wether we'd like to install highline support for
+#   schleuder or not.
+# schleuder_install_dir:
+#   The directory in which you'd like to install schleuder
+#   Default: '/opt/schleuder',
+class schleuder {
+  include schleuder::base
+}
