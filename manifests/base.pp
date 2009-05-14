@@ -39,4 +39,11 @@ class schleuder::base {
                 "puppet://$server/schleuder/config/schleuder.conf" ],
     owner => root, group => schleuder, mode => 0640;
   }
+
+  file{'/var/log/schleuder.log':
+    ensure => file,
+    replace => false,
+    require => Group['schleuder'],
+    owner => root, group => schleuder, mode => 0660;
+  }
 }
