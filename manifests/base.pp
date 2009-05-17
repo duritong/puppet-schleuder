@@ -23,7 +23,7 @@ class schleuder::base {
 
   file{ [ '/etc/schleuder', '/var/schleuderlists' ]:
     ensure => directory,
-    require => Group['schleuder'],
+    require => [ Group['schleuder'], Git::Clone['schleuder'] ],
     owner => root, group => schleuder, mode => 0640;
   }
 
