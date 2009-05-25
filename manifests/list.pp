@@ -84,7 +84,7 @@ define schleuder::list(
       creates => "/var/schleuderlists/${name}/list.conf",
     }
   } else {
-    Exec["manage_schleuder_list_${name}"}[
+    Exec["manage_schleuder_list_${name}"]{
       command => "rm -rf /var/schleuderlists/${name}",
       onlyif => "test -d /var/schleuderlists/${name}",
     } 
