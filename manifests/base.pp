@@ -28,7 +28,7 @@ class schleuder::base {
     require => [ User::Managed['schleuder'], Package['tmail'], Package['ruby-gpgme'] ],
   }
 
-  file{[ "${schleuder_install_dir}/bin/schleuder", "${schleuder_install_dir}/contrib/newlist.rb" ],
+  file{["${schleuder_install_dir}/bin/schleuder", "${schleuder_install_dir}/contrib/newlist.rb" ]:
     require => Git::Clone['schleuder'],
     owner => root, group => 'schleuder', mode => 0750;
   }
