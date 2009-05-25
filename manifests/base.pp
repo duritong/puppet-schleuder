@@ -10,20 +10,27 @@ class schleuder::base {
     $schleuder_install_dir  = '/opt/schleuder'
   }
 
-  group{'schleuder':
-    ensure => present,
+  user::managed{'schleuder':
+    name_comment => 'schleuder user',
+    managehome => false,
+    homedir => '/var/schleuderlists',
+    shell => $operatingsystem ? {
+      debian => '/usr/sbin/nologin',
+      ubuntu => '/usr/sbin/nologin',
+      default => '/sbin/nologin'
+    },
   }
 
   git::clone{'schleuder':
     git_repo => 'git://git.immerda.ch/schleuder.git',
     projectroot => $schleuder_install_dir,
     cloneddir_group => 'schleuder',
-    require => [ Group['schleuder'], Package['tmail'], Package['ruby-gpgme'] ],
+    require => [ User::Managed['schleuder'], Package['tmail'], Package['ruby-gpgme'] ],
   }
 
-  file{ [ '/etc/schleuder', '/var/schleuderlists' ]:
+  file{ [ '/etc/schleuder', '/var/schleuderlists', '/var/schleuderlists/init_public_keys' ]:
     ensure => directory,
-    require => [ Group['schleuder'], Git::Clone['schleuder'] ],
+    require => [ User::Managed['schleuder'], Git::Clone['schleuder'] ],
     owner => root, group => schleuder, mode => 0640;
   }
 
@@ -43,7 +50,7 @@ class schleuder::base {
   file{'/var/log/schleuder.log':
     ensure => file,
     replace => false,
-    require => Group['schleuder'],
-    owner => root, group => schleuder, mode => 0660;
+    require => User::Managed['schleuder'],
+    owner => schleuder, group => 0, mode => 0600;
   }
 }
