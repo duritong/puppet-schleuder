@@ -33,7 +33,7 @@ class schleuder::base {
     owner => root, group => 'schleuder', mode => 0750;
   }
 
-  file{ [ '/etc/schleuder', '/var/schleuderlists', '/var/schleuderlists/init_public_keys' ]:
+  file{ [ '/etc/schleuder', '/var/schleuderlists', '/var/schleuderlists/initmemberkeys' ]:
     ensure => directory,
     require => [ User::Managed['schleuder'], Git::Clone['schleuder'] ],
     owner => root, group => schleuder, mode => 0640;
