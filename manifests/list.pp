@@ -76,14 +76,15 @@ define schleuder::list(
     owner => root, group => schleuder, mode => 0640;
   }
 
+  exec{"manage_schleuder_list_${name}": }
   if $ensure == present {
-    exec{"manage_schleuder_list_${name}":
+    Exec["manage_schleuder_list_${name}"]{
       command => "${schleuder_install_dir}/contrib/newlist.rb ${name} -email ${email} -realname \"${real_realname}\" -adminaddress ${adminaddress} -initmember ${real_initmember} -initmemberkey /var/schleuderlists/init_public_keys/${name}_${admin_public_key}.pub -nointeractive -mailuser ${run_as}",
       require => File["/var/schleuderlists/init_public_keys/${name}_${admin_public_key}.pub"],
       creates => "/var/schleuderlists/${name}/list.conf",
     }
   } else {
-    exec{"manage_schleuder_list_${name}":
+    Exec["manage_schleuder_list_${name}"}[
       command => "rm -rf /var/schleuderlists/${name}",
       onlyif => "test -d /var/schleuderlists/${name}",
     } 
