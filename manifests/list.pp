@@ -9,10 +9,10 @@
 # initmember: initial member of the list
 #   - 'admin': list admin is taken (*Default*)
 #   - default: this address is taken
-# admin_public_key: public key of the initial admin
+# initmemberkey: public key of the initial admin
 #   Lookup path:
-#     - files/schleuder/init_public_keys/${fqdn}/${admin_public_key}.pub
-#     - files/schleuder/init_public_keys/${admin_public_key}.pub
+#     - files/schleuder/initmemberkeys/${fqdn}/${initmemberkey}.pub
+#     - files/schleuder/initmemberkeys/${initmemberkey}.pub
 # realname: Name of the list
 #   - 'absent': Something like "${name} schleuder list" will be added" (*Default*)
 #   - default: this value will be taken 
@@ -28,7 +28,7 @@ define schleuder::list(
   $email,
   $adminaddress,
   $initmember = 'admin',
-  $admin_public_key,
+  $initmemberkey,
   $realname = 'absent',
   $manage_alias = true
 ){
@@ -69,9 +69,9 @@ define schleuder::list(
     }
   }
 
-  file{"/var/schleuderlists/init_public_keys/${name}_${admin_public_key}.pub":
-    source => [ "puppet://$server/files/schleuder/init_public_keys/${fqdn}/${admin_public_key}.pub",
-                "puppet://$server/files/schleuder/init_public_keys/${admin_public_key}.pub" ],
+  file{"/var/schleuderlists/init_public_keys/${name}_${initmemberkey}.pub":
+    source => [ "puppet://$server/files/schleuder/init_public_keys/${fqdn}/${initmemberkey}.pub",
+                "puppet://$server/files/schleuder/init_public_keys/${initmemberkey}.pub" ],
     ensure => $ensure,
     owner => root, group => schleuder, mode => 0640;
   }
@@ -79,8 +79,8 @@ define schleuder::list(
   exec{"manage_schleuder_list_${name}": }
   if $ensure == present {
     Exec["manage_schleuder_list_${name}"]{
-      command => "${schleuder_install_dir}/contrib/newlist.rb ${name} -email ${email} -realname \"${real_realname}\" -adminaddress ${adminaddress} -initmember ${real_initmember} -initmemberkey /var/schleuderlists/init_public_keys/${name}_${admin_public_key}.pub -nointeractive -mailuser ${run_as}",
-      require => File["/var/schleuderlists/init_public_keys/${name}_${admin_public_key}.pub"],
+      command => "${schleuder_install_dir}/contrib/newlist.rb ${name} -email ${email} -realname \"${real_realname}\" -adminaddress ${adminaddress} -initmember ${real_initmember} -initmemberkey /var/schleuderlists/init_public_keys/${name}_${initmemberkey}.pub -nointeractive -mailuser ${run_as}",
+      require => File["/var/schleuderlists/init_public_keys/${name}_${initmemberkey}.pub"],
       creates => "/var/schleuderlists/${name}/list.conf",
     }
   } else {
