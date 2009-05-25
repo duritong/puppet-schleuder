@@ -28,6 +28,11 @@ class schleuder::base {
     require => [ User::Managed['schleuder'], Package['tmail'], Package['ruby-gpgme'] ],
   }
 
+  file{[ "${schleuder_install_dir}/bin/schleuder", "${schleuder_install_dir}/contrib/newlist.rb" ],
+    require => Git::Clone['schleuder'],
+    owner => root, group => 'schleuder', mode => 0750;
+  }
+
   file{ [ '/etc/schleuder', '/var/schleuderlists', '/var/schleuderlists/init_public_keys' ]:
     ensure => directory,
     require => [ User::Managed['schleuder'], Git::Clone['schleuder'] ],
@@ -51,6 +56,8 @@ class schleuder::base {
     ensure => file,
     replace => false,
     require => User::Managed['schleuder'],
-    owner => schleuder, group => 0, mode => 0600;
+    # as we might run schleuder as different user,
+    # the log file schould be writeable for the group.
+    owner => schleuder, group => schleuder, mode => 0660;
   }
 }
