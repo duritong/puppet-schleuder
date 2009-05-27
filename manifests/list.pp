@@ -58,7 +58,7 @@ define schleuder::list(
       ensure => $ensure,
       groups => 'schleuder',
       manage_group => false,
-      manage_home => false,
+      managehome => false,
       homedir => "/var/schleuderlists/${name}",
       shell => $operatingsystem ? {
         debian => '/usr/sbin/nologin',
