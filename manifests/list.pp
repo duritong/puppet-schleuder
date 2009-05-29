@@ -30,8 +30,14 @@ define schleuder::list(
   $initmember = 'admin',
   $initmemberkey,
   $realname = 'absent',
-  $manage_alias = true
+  $manage_alias = true,
+  $webpassword = 'absent',
+  $webpassword_encrypted = true,
+  $webpassword_force = false
 ){
+  if ($webpassword != 'absent') and ($run_as != 'schleuder') {
+    fail("you can't enable schleuder list ${name} on ${fqdn} for web if it isn't running as user schleuder!")
+  }
   include ::schleuder
 
   $real_run_as = $run_as ? {
@@ -98,6 +104,15 @@ define schleuder::list(
       ensure => $ensure,
       recipient => "|${schleuder_install_dir}/bin/schleuder ${name}",
       require => Exec["manage_schleuder_list_${name}"],
+    }
+  }
+
+  if $webpassword != 'absent' {
+    webschleuder::list{$name:
+      ensure => $ensure,
+      password => webpassword,
+      password_encrypted => $webpassword_encrypted,
+      force_password => $webpassword_force,
     }
   }
 }
