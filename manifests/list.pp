@@ -110,7 +110,7 @@ define schleuder::list(
   if $webpassword != 'absent' {
     webschleuder::list{$name:
       ensure => $ensure,
-      password => webpassword,
+      password => $webpassword,
       password_encrypted => $webpassword_encrypted,
       force_password => $webpassword_force,
     }
