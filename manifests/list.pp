@@ -100,10 +100,15 @@ define schleuder::list(
   }
 
   if $manage_alias {
-    sendmail::mailalias{$name:
-      ensure => $ensure,
-      recipient => "|${schleuder_install_dir}/bin/schleuder ${name}",
-      require => Exec["manage_schleuder_list_${name}"],
+    sendmail::mailalias{
+      $name:
+        ensure => $ensure,
+        recipient => "|${schleuder_install_dir}/bin/schleuder ${name}",
+        require => Exec["manage_schleuder_list_${name}"];
+      "${name}-bounce":
+        ensure => $ensure,
+        recipient => "|${schleuder_install_dir}/bin/schleuder ${name}",
+        require => Exec["manage_schleuder_list_${name}"];
     }
   }
 
