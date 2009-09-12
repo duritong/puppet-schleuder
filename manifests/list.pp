@@ -109,6 +109,10 @@ define schleuder::list(
         ensure => $ensure,
         recipient => "|${schleuder_install_dir}/bin/schleuder ${name}",
         require => Exec["manage_schleuder_list_${name}"];
+      "${name}-sendkey":
+        ensure => $ensure,
+        recipient => "|${schleuder_install_dir}/bin/schleuder ${name}",
+        require => Exec["manage_schleuder_list_${name}"];
     }
   }
 
