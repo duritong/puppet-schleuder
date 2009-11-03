@@ -55,6 +55,7 @@ class schleuder::base {
   file{'/var/log/schleuder':
     ensure => directory,
     recurse => true,
+    backup => false,
     require => User::Managed['schleuder'],
     # as we might run schleuder as different user,
     # the log file schould be writeable for the group.
