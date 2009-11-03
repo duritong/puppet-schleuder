@@ -52,9 +52,9 @@ class schleuder::base {
     owner => root, group => schleuder, mode => 0640;
   }
 
-  file{'/var/log/schleuder.log':
-    ensure => file,
-    replace => false,
+  file{'/var/log/schleuder':
+    ensure => directory,
+    recurse => true,
     require => User::Managed['schleuder'],
     # as we might run schleuder as different user,
     # the log file schould be writeable for the group.
