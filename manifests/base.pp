@@ -42,13 +42,13 @@ class schleuder::base {
   file{'/etc/schleuder/default-list.conf':
     source => [ "puppet://$server/files/schleuder/config/${fqdn}/default-list.conf",
                 "puppet://$server/files/schleuder/config/default-list.conf",
-                "puppet://$server/schleuder/config/default-list.conf" ],
+                "puppet://$server/modules/schleuder/config/default-list.conf" ],
     owner => root, group => schleuder, mode => 0640;
   }
   file{'/etc/schleuder/schleuder.conf':
     source => [ "puppet://$server/files/schleuder/config/${fqdn}/schleuder.conf",
                 "puppet://$server/files/schleuder/config/schleuder.conf",
-                "puppet://$server/schleuder/config/schleuder.conf" ],
+                "puppet://$server/modules/schleuder/config/schleuder.conf" ],
     owner => root, group => schleuder, mode => 0640;
   }
 
