@@ -10,7 +10,7 @@
 #   - 'admin': list admin is taken (*Default*)
 #   - default: this address is taken
 # initmemberkey: public key of the initial admin
-#   - 'admin': list admin address is taken and postfixed with .pub (*Default*)
+#   - 'member': list initmember address is taken and postfixed with .pub (*Default*)
 #   - default: this address is taken
 #   Lookup path:
 #     - modules/site-schleuder/initmemberkeys/${fqdn}/${initmemberkey}.pub
@@ -62,7 +62,7 @@ define schleuder::list(
   }
 
   $real_initmemberkey = $initmemberkey ? {
-    'admin' => $initmemberkey,
+    'member' => $real_initmember,
     default => $initmemberkey
   }
 
