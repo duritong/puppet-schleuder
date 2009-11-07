@@ -30,7 +30,7 @@ define schleuder::list(
   $email,
   $adminaddress,
   $initmember = 'admin',
-  $initmemberkey = 'admin',
+  $initmemberkey = 'member',
   $realname = 'absent',
   $manage_alias = true,
   $webpassword = 'absent',
