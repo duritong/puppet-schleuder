@@ -10,9 +10,11 @@
 #   - 'admin': list admin is taken (*Default*)
 #   - default: this address is taken
 # initmemberkey: public key of the initial admin
+#   - 'admin': list admin address is taken and postfixed with .pub (*Default*)
+#   - default: this address is taken
 #   Lookup path:
-#     - files/schleuder/initmemberkeys/${fqdn}/${initmemberkey}.pub
-#     - files/schleuder/initmemberkeys/${initmemberkey}.pub
+#     - modules/site-schleuder/initmemberkeys/${fqdn}/${initmemberkey}.pub
+#     - modules/site-schleuder/initmemberkeys/${initmemberkey}.pub
 # realname: Name of the list
 #   - 'absent': Something like "${name} schleuder list" will be added" (*Default*)
 #   - default: this value will be taken 
@@ -28,7 +30,7 @@ define schleuder::list(
   $email,
   $adminaddress,
   $initmember = 'admin',
-  $initmemberkey,
+  $initmemberkey = 'admin',
   $realname = 'absent',
   $manage_alias = true,
   $webpassword = 'absent',
@@ -59,6 +61,11 @@ define schleuder::list(
     default => $initmember
   }
 
+  $real_initmemberkey = $initmemberkey ? {
+    'admin' => $initmemberkey,
+    default => $initmemberkey
+  }
+
   if $manage_run_as {
     user::managed{$real_run_as:
       ensure => $ensure,
@@ -75,9 +82,9 @@ define schleuder::list(
     }
   }
 
-  file{"/var/schleuderlists/initmemberkeys/${name}_${initmemberkey}.pub":
-    source => [ "puppet://$server/files/schleuder/initmemberkeys/${fqdn}/${initmemberkey}.pub",
-                "puppet://$server/files/schleuder/initmemberkeys/${initmemberkey}.pub" ],
+  file{"/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub":
+    source => [ "puppet://$server/modules/site-schleuder/initmemberkeys/${fqdn}/${real_initmemberkey}.pub",
+                "puppet://$server/modules/site-schleuder/initmemberkeys/${real_initmemberkey}.pub" ],
     ensure => $ensure,
     owner => root, group => schleuder, mode => 0640;
   }
