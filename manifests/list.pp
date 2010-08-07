@@ -83,8 +83,8 @@ define schleuder::list(
   }
 
   file{"/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub":
-    source => [ "puppet://$server/modules/site-schleuder/initmemberkeys/${fqdn}/${real_initmemberkey}.pub",
-                "puppet://$server/modules/site-schleuder/initmemberkeys/${real_initmemberkey}.pub" ],
+    source => [ "puppet:///modules/site-schleuder/initmemberkeys/${fqdn}/${real_initmemberkey}.pub",
+                "puppet:///modules/site-schleuder/initmemberkeys/${real_initmemberkey}.pub" ],
     ensure => $ensure,
     owner => root, group => schleuder, mode => 0640;
   }
