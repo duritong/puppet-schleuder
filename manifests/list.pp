@@ -98,6 +98,7 @@ define schleuder::list(
         default => File["/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub"]
       },
       creates => "/var/schleuderlists/${name}/list.conf",
+      timeout => -1,
     }
   } else {
     Exec["manage_schleuder_list_${name}"]{
