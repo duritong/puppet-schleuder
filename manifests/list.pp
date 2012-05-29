@@ -13,8 +13,8 @@
 #   - 'member': list initmember address is taken and postfixed with .pub (*Default*)
 #   - default: this address is taken
 #   Lookup path:
-#     - modules/site-schleuder/initmemberkeys/${fqdn}/${initmemberkey}.pub
-#     - modules/site-schleuder/initmemberkeys/${initmemberkey}.pub
+#     - modules/site_schleuder/initmemberkeys/${fqdn}/${initmemberkey}.pub
+#     - modules/site_schleuder/initmemberkeys/${initmemberkey}.pub
 # realname: Name of the list
 #   - 'absent': Something like "${name} schleuder list" will be added" (*Default*)
 #   - default: this value will be taken 
@@ -83,8 +83,8 @@ define schleuder::list(
   }
 
   file{"/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub":
-    source => [ "puppet:///modules/site-schleuder/initmemberkeys/${fqdn}/${real_initmemberkey}.pub",
-                "puppet:///modules/site-schleuder/initmemberkeys/${real_initmemberkey}.pub" ],
+    source => [ "puppet:///modules/site_schleuder/initmemberkeys/${fqdn}/${real_initmemberkey}.pub",
+                "puppet:///modules/site_schleuder/initmemberkeys/${real_initmemberkey}.pub" ],
     ensure => $ensure,
     owner => root, group => schleuder, mode => 0640;
   }

@@ -40,14 +40,14 @@ class schleuder::base {
   }
 
   file{'/etc/schleuder/default-list.conf':
-    source => [ "puppet:///modules/site-schleuder/config/${fqdn}/default-list.conf",
-                "puppet:///modules/site-schleuder/config/default-list.conf",
+    source => [ "puppet:///modules/site_schleuder/config/${fqdn}/default-list.conf",
+                "puppet:///modules/site_schleuder/config/default-list.conf",
                 "puppet:///modules/schleuder/config/default-list.conf" ],
     owner => root, group => schleuder, mode => 0640;
   }
   file{'/etc/schleuder/schleuder.conf':
-    source => [ "puppet:///modules/site-schleuder/config/${fqdn}/schleuder.conf",
-                "puppet:///modules/site-schleuder/config/schleuder.conf",
+    source => [ "puppet:///modules/site_schleuder/config/${fqdn}/schleuder.conf",
+                "puppet:///modules/site_schleuder/config/schleuder.conf",
                 "puppet:///modules/schleuder/config/schleuder.conf" ],
     owner => root, group => schleuder, mode => 0640;
   }
