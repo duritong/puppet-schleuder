@@ -14,7 +14,7 @@ class schleuder::base {
     name_comment => 'schleuder user',
     managehome => false,
     homedir => '/var/schleuderlists',
-    shell => $operatingsystem ? {
+    shell => $::operatingsystem ? {
       debian => '/usr/sbin/nologin',
       ubuntu => '/usr/sbin/nologin',
       default => '/sbin/nologin'
@@ -40,13 +40,13 @@ class schleuder::base {
   }
 
   file{'/etc/schleuder/default-list.conf':
-    source => [ "puppet:///modules/site_schleuder/config/${fqdn}/default-list.conf",
+    source => [ "puppet:///modules/site_schleuder/config/${::fqdn}/default-list.conf",
                 "puppet:///modules/site_schleuder/config/default-list.conf",
                 "puppet:///modules/schleuder/config/default-list.conf" ],
     owner => root, group => schleuder, mode => 0640;
   }
   file{'/etc/schleuder/schleuder.conf':
-    source => [ "puppet:///modules/site_schleuder/config/${fqdn}/schleuder.conf",
+    source => [ "puppet:///modules/site_schleuder/config/${::fqdn}/schleuder.conf",
                 "puppet:///modules/site_schleuder/config/schleuder.conf",
                 "puppet:///modules/schleuder/config/schleuder.conf" ],
     owner => root, group => schleuder, mode => 0640;

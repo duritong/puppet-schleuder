@@ -13,7 +13,7 @@
 #   - 'member': list initmember address is taken and postfixed with .pub (*Default*)
 #   - default: this address is taken
 #   Lookup path:
-#     - modules/site_schleuder/initmemberkeys/${fqdn}/${initmemberkey}.pub
+#     - modules/site_schleuder/initmemberkeys/${::fqdn}/${initmemberkey}.pub
 #     - modules/site_schleuder/initmemberkeys/${initmemberkey}.pub
 # realname: Name of the list
 #   - 'absent': Something like "${name} schleuder list" will be added" (*Default*)
@@ -38,7 +38,7 @@ define schleuder::list(
   $webpassword_force = false
 ){
   if ($webpassword != 'absent') and ($run_as != 'schleuder') {
-    fail("you can't enable schleuder list ${name} on ${fqdn} for web if it isn't running as user schleuder!")
+    fail("you can't enable schleuder list ${name} on ${::fqdn} for web if it isn't running as user schleuder!")
   }
   include ::schleuder
 
@@ -73,7 +73,7 @@ define schleuder::list(
       manage_group => false,
       managehome => false,
       homedir => "/var/schleuderlists/${name}",
-      shell => $operatingsystem ? {
+      shell => $::operatingsystem ? {
         debian => '/usr/sbin/nologin',
         ubuntu => '/usr/sbin/nologin',
         default => '/sbin/nologin'
@@ -83,7 +83,7 @@ define schleuder::list(
   }
 
   file{"/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub":
-    source => [ "puppet:///modules/site_schleuder/initmemberkeys/${fqdn}/${real_initmemberkey}.pub",
+    source => [ "puppet:///modules/site_schleuder/initmemberkeys/${::fqdn}/${real_initmemberkey}.pub",
                 "puppet:///modules/site_schleuder/initmemberkeys/${real_initmemberkey}.pub" ],
     ensure => $ensure,
     owner => root, group => schleuder, mode => 0640;
