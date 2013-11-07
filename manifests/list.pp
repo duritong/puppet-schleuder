@@ -95,9 +95,10 @@ define schleuder::list(
       default => File["/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub"]
     }
     Exec["manage_schleuder_list_${name}"]{
-      command => "${schleuder::install_dir}/contrib/newlist.rb ${name} -email ${email} -realname \"${real_realname}\" -adminaddress ${adminaddress} -initmember ${real_initmember} -initmemberkey /var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub -nointeractive -mailuser ${run_as}",
+      command => "${schleuder::install_dir}/contrib/newlist.rb ${name} -email ${email} -realname \"${real_realname}\" -adminaddress ${adminaddress} -initmember ${real_initmember} -initmemberkey /var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub -nointeractive -mailuser ${run_as} && chown schleuder:schleuder /var/log/schleuder/schleuder.log && chmod 0660 /var/log/schleuder/schleuder.log",
       creates => "/var/schleuderlists/${name}/list.conf",
       timeout => '-1',
+      before  => File['/var/log/schleuder/schleuder.log'],
       require => $exec_require,
     }
   } else {

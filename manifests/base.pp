@@ -60,5 +60,11 @@ class schleuder::base {
       owner   => schleuder,
       group   => schleuder,
       mode    => '0660';
+    '/var/log/schleuder/schleuder.log':
+      # as we might run schleuder as different user,
+      # the log file schould be writeable for the group.
+      owner   => schleuder,
+      group   => schleuder,
+      mode    => '0660';
   }
 }
