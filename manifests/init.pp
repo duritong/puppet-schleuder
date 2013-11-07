@@ -3,9 +3,9 @@
 #
 # Copyright 2009, admin(at)immerda.ch
 #
-# This program is free software; you can redistribute 
-# it and/or modify it under the terms of the GNU 
-# General Public License version 3 as published by 
+# This program is free software; you can redistribute
+# it and/or modify it under the terms of the GNU
+# General Public License version 3 as published by
 # the Free Software Foundation.
 #
 
@@ -17,6 +17,9 @@
 # schleuder_install_dir:
 #   The directory in which you'd like to install schleuder
 #   Default: '/opt/schleuder',
-class schleuder {
+class schleuder(
+  $enable_highline = true,
+  $install_dir     = '/opt/schleuder',
+) {
   include schleuder::base
 }

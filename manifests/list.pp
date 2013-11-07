@@ -17,28 +17,28 @@
 #     - modules/site_schleuder/initmemberkeys/${initmemberkey}.pub
 # realname: Name of the list
 #   - 'absent': Something like "${name} schleuder list" will be added" (*Default*)
-#   - default: this value will be taken 
+#   - default: this value will be taken
 # manage_alias: Wether to add an alias or not
 #   - true: add alias to /etc/aliases (*Default*)
 #           Note: you have to check your MTA Setup wether it supports the correct run_as User
 #   - false: don't add aliases
-#   
+#
 define schleuder::list(
-  $ensure = present,
-  $run_as = 'schleuder',
-  $manage_run_as = false,
   $email,
   $adminaddress,
-  $initmember = 'admin',
-  $initmemberkey = 'member',
-  $realname = 'absent',
-  $manage_alias = true,
-  $webpassword = 'absent',
-  $webpassword_encrypted = true,
-  $webpassword_force = false
+  $ensure                 = present,
+  $run_as                 = 'schleuder',
+  $manage_run_as          = false,
+  $initmember             = 'admin',
+  $initmemberkey          = 'member',
+  $realname               = 'absent',
+  $manage_alias           = true,
+  $webpassword            = 'absent',
+  $webpassword_encrypted  = true,
+  $webpassword_force      = false
 ){
   if ($webpassword != 'absent') and ($run_as != 'schleuder') {
-    fail("you can't enable schleuder list ${name} on ${::fqdn} for web if it isn't running as user schleuder!")
+    fail("You can't enable schleuder list ${name} on ${::fqdn} for web if it isn't running as user schleuder!")
   }
   include ::schleuder
 
@@ -52,10 +52,6 @@ define schleuder::list(
     default => $realname
   }
 
-  if $schleuder_install_dir == '' {
-    $schleuder_install_dir  = '/opt/schleuder'
-  }
-
   $real_initmember = $initmember ? {
     'admin' => $adminaddress,
     default => $initmember
@@ -67,69 +63,73 @@ define schleuder::list(
   }
 
   if $manage_run_as {
+    $user_shell = $::operatingsystem ? {
+      debian => '/usr/sbin/nologin',
+      ubuntu => '/usr/sbin/nologin',
+      default => '/sbin/nologin'
+    }
     user::managed{$real_run_as:
-      ensure => $ensure,
-      groups => 'schleuder',
-      manage_group => false,
-      managehome => false,
-      homedir => "/var/schleuderlists/${name}",
-      shell => $::operatingsystem ? {
-        debian => '/usr/sbin/nologin',
-        ubuntu => '/usr/sbin/nologin',
-        default => '/sbin/nologin'
-      },
-      require => User::Managed['schleuder'],
+      ensure        => $ensure,
+      groups        => 'schleuder',
+      manage_group  => false,
+      managehome    => false,
+      homedir       => "/var/schleuderlists/${name}",
+      shell         => $user_shell,
+      require       => User::Managed['schleuder'],
     }
   }
 
   file{"/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub":
-    source => [ "puppet:///modules/site_schleuder/initmemberkeys/${::fqdn}/${real_initmemberkey}.pub",
-                "puppet:///modules/site_schleuder/initmemberkeys/${real_initmemberkey}.pub" ],
-    ensure => $ensure,
-    owner => root, group => schleuder, mode => 0640;
+    ensure  => $ensure,
+    source  => [  "puppet:///modules/site_schleuder/initmemberkeys/${::fqdn}/${real_initmemberkey}.pub",
+                  "puppet:///modules/site_schleuder/initmemberkeys/${real_initmemberkey}.pub" ],
+    owner   => root,
+    group   => schleuder,
+    mode    => '0640';
   }
 
   exec{"manage_schleuder_list_${name}": }
   if $ensure == present {
+    $exec_require = $manage_run_as ? {
+      true => [ User::Managed[$real_run_as], File["/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub"] ],
+      default => File["/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub"]
+    }
     Exec["manage_schleuder_list_${name}"]{
-      command => "${schleuder_install_dir}/contrib/newlist.rb ${name} -email ${email} -realname \"${real_realname}\" -adminaddress ${adminaddress} -initmember ${real_initmember} -initmemberkey /var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub -nointeractive -mailuser ${run_as}",
-      require => $manage_run_as ? {
-        true => [ User::Managed[$real_run_as], File["/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub"] ],
-        default => File["/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub"]
-      },
+      command => "${schleuder::install_dir}/contrib/newlist.rb ${name} -email ${email} -realname \"${real_realname}\" -adminaddress ${adminaddress} -initmember ${real_initmember} -initmemberkey /var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub -nointeractive -mailuser ${run_as}",
       creates => "/var/schleuderlists/${name}/list.conf",
       timeout => '-1',
+      require => $exec_require,
     }
   } else {
     Exec["manage_schleuder_list_${name}"]{
       command => "rm -rf /var/schleuderlists/${name}",
-      onlyif => "test -d /var/schleuderlists/${name}",
-    } 
+      onlyif  => "test -d /var/schleuderlists/${name}",
+    }
   }
 
   if $manage_alias {
     sendmail::mailalias{
       $name:
-        ensure => $ensure,
-        recipient => "|${schleuder_install_dir}/bin/schleuder ${name}",
-        require => Exec["manage_schleuder_list_${name}"];
+        ensure    => $ensure,
+        recipient => "|${schleuder::install_dir}/bin/schleuder ${name}",
+        require   => Exec["manage_schleuder_list_${name}"];
       "${name}-bounce":
-        ensure => $ensure,
-        recipient => "|${schleuder_install_dir}/bin/schleuder ${name}",
-        require => Exec["manage_schleuder_list_${name}"];
+        ensure    => $ensure,
+        recipient => "|${schleuder::install_dir}/bin/schleuder ${name}",
+        require   => Exec["manage_schleuder_list_${name}"];
       "${name}-sendkey":
-        ensure => $ensure,
-        recipient => "|${schleuder_install_dir}/bin/schleuder ${name}",
-        require => Exec["manage_schleuder_list_${name}"];
+        ensure    => $ensure,
+        recipient => "|${schleuder::install_dir}/bin/schleuder ${name}",
+        require   => Exec["manage_schleuder_list_${name}"];
     }
   }
 
   if $webpassword != 'absent' {
     webschleuder::list{$name:
-      ensure => $ensure,
-      password => $webpassword,
-      password_encrypted => $webpassword_encrypted,
-      force_password => $webpassword_force,
+      ensure              => $ensure,
+      password            => $webpassword,
+      password_encrypted  => $webpassword_encrypted,
+      force_password      => $webpassword_force,
     }
   }
 }
