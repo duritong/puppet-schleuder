@@ -91,8 +91,8 @@ define schleuder::list(
   exec{"manage_schleuder_list_${name}": }
   if $ensure == present {
     $exec_require = $manage_run_as ? {
-      true => [ User::Managed[$real_run_as], File["/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub"] ],
-      default => File["/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub"]
+      true => [ User::Managed[$real_run_as], File["/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub",'/etc/schleuder/schleuder.conf'] ],
+      default => File["/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub",'/etc/schleuder/schleuder.conf']
     }
     Exec["manage_schleuder_list_${name}"]{
       command => "${schleuder::install_dir}/contrib/newlist.rb ${name} -email ${email} -realname \"${real_realname}\" -adminaddress ${adminaddress} -initmember ${real_initmember} -initmemberkey /var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub -nointeractive -mailuser ${run_as} && chown schleuder:schleuder /var/log/schleuder/schleuder.log && chmod 0660 /var/log/schleuder/schleuder.log",
