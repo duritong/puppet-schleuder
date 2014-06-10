@@ -24,8 +24,8 @@
 #   - false: don't add aliases
 #
 define schleuder::list(
-  $email,
-  $adminaddress,
+  $email                  = $name,
+  $adminaddress           = undef,
   $ensure                 = present,
   $run_as                 = 'schleuder',
   $manage_run_as          = false,
@@ -40,6 +40,11 @@ define schleuder::list(
   if ($webpassword != 'absent') and ($run_as != 'schleuder') {
     fail("You can't enable schleuder list ${name} on ${::fqdn} for web if it isn't running as user schleuder!")
   }
+
+  if ($ensure == 'present') and !$adminaddress {
+    fail("Must pass adminaddress to Schleuder::List[${name}]")
+  }
+
   include ::schleuder
 
   $real_run_as = $run_as ? {
@@ -80,16 +85,17 @@ define schleuder::list(
   }
 
   file{"/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub":
-    ensure  => $ensure,
-    source  => [  "puppet:///modules/site_schleuder/initmemberkeys/${::fqdn}/${real_initmemberkey}.pub",
-                  "puppet:///modules/site_schleuder/initmemberkeys/${real_initmemberkey}.pub" ],
-    owner   => root,
-    group   => schleuder,
-    mode    => '0640';
+    ensure  => $ensure;
   }
-
   exec{"manage_schleuder_list_${name}": }
   if $ensure == present {
+    File["/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub"]{
+      source  => [  "puppet:///modules/site_schleuder/initmemberkeys/${::fqdn}/${real_initmemberkey}.pub",
+                    "puppet:///modules/site_schleuder/initmemberkeys/${real_initmemberkey}.pub" ],
+      owner   => root,
+      group   => schleuder,
+      mode    => '0640'
+    }
     $exec_require = $manage_run_as ? {
       true => [ User::Managed[$real_run_as], File["/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub",'/etc/schleuder/schleuder.conf'] ],
       default => File["/var/schleuderlists/initmemberkeys/${name}_${real_initmemberkey}.pub",'/etc/schleuder/schleuder.conf']
