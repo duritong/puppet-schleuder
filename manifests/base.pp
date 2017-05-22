@@ -1,70 +1,71 @@
-# manage basic things of schleuder
+# manage a schleuder installation
 class schleuder::base {
-  include rubygems::tmail
-  include rubygems::gpgme
-
-  if $schleuder::enable_highline {
-    include rubygems::highline
+  package{'schleuder':
+    ensure => installed,
+  } -> file{'/etc/schleuder/schleuder.yml':
+    content => template('schleuder/schleuder.yml.erb'),
+    owner   => 'root',
+    group   => 'schleuder',
+    mode    => '0640',
+  } ~> exec{'schleuder install':
+    refreshonly => true,
+    notify      => Service['schleuder-api-daemon'],
+  } -> file{
+    ['/etc/schleuder/schleuder-certificate.pem',
+    '/etc/schleuder/schleuder-private-key.pem']:
+      owner => root,
+      group => 'schleuder',
+      mode  => '0640';
+  } ~> service{'schleuder-api-daemon':
+    ensure => running,
+    enable => true,
+  } -> http_conn_validator { 'schleuder-api-ready':
+    host          => $schleuder::api_host,
+    port          => $schleuder::api_port,
+    use_ssl       => true,
+    test_url      => '/status.json',
+    # api likely uses custom certs
+    verify_peer   => false,
+    # at the moment api requires always
+    # authentication
+    expected_code => 401,
   }
 
-  $user_shell = $::operatingsystem ? {
-    debian => '/usr/sbin/nologin',
-    ubuntu => '/usr/sbin/nologin',
-    default => '/sbin/nologin'
-  }
-  user::managed{'schleuder':
-    name_comment  => 'schleuder user',
-    managehome    => false,
-    homedir       => '/var/schleuderlists',
-    shell         => $user_shell,
-  }
-
-  git::clone{'schleuder':
-    git_repo        => 'git://git.immerda.ch/schleuder.git',
-    projectroot     => $schleuder::install_dir,
-    cloneddir_group => 'schleuder',
-    require         => [ User::Managed['schleuder'], Package['tmail'], Package['ruby-gpgme'] ],
+  file{'/var/lib/schleuder/adminkeys':
+    ensure  => directory,
+    owner   => 'root',
+    group   => 'schleuder',
+    mode    => '0640',
+    purge   => true,
+    force   => true,
+    recurse => true,
+    require => Package['schleuder'],
   }
 
-  file{
-    ["${schleuder::install_dir}/bin/schleuder", "${schleuder::install_dir}/contrib/newlist.rb" ]:
-      require => Git::Clone['schleuder'],
-      owner   => root,
-      group   => 'schleuder',
-      mode    => '0750';
-    [ '/etc/schleuder', '/var/schleuderlists', '/var/schleuderlists/initmemberkeys' ]:
-      ensure  => directory,
-      require => [ User::Managed['schleuder'], Git::Clone['schleuder'] ],
-      owner   => root,
-      group   => schleuder,
-      mode    => '0640';
-    '/etc/schleuder/default-list.conf':
-      source  => [  "puppet:///modules/site_schleuder/config/${::fqdn}/default-list.conf",
-                    'puppet:///modules/site_schleuder/config/default-list.conf',
-                    'puppet:///modules/schleuder/config/default-list.conf' ],
-      owner   => root,
-      group   => schleuder,
-      mode    => '0640';
-    '/etc/schleuder/schleuder.conf':
-      source  => ["puppet:///modules/site_schleuder/config/${::fqdn}/schleuder.conf",
-                  'puppet:///modules/site_schleuder/config/schleuder.conf',
-                  'puppet:///modules/schleuder/config/schleuder.conf' ],
-      owner   => root,
-      group   => schleuder,
-      mode    => '0640';
-    '/var/log/schleuder':
-      ensure  => directory,
-      require => User::Managed['schleuder'],
-      # as we might run schleuder as different user,
-      # the log file schould be writeable for the group.
-      owner   => schleuder,
-      group   => schleuder,
-      mode    => '0660';
-    '/var/log/schleuder/schleuder.log':
-      # as we might run schleuder as different user,
-      # the log file schould be writeable for the group.
-      owner   => schleuder,
-      group   => schleuder,
-      mode    => '0660';
+  if $schleuder::cli_api_key {
+    class{'schleuder::client':
+      api_key         => $schleuder::cli_api_key,
+      tls_fingerprint => $schleuder::tls_fingerprint,
+      host            => $schleuder::api_host,
+      port            => $schleuder::api_port,
+    }
+    # make sure we only setup the cli once schleuder itself is done
+    Http_conn_validator['schleuder-api-ready'] -> File['/root/.schleuder-cli']
+  }
+
+  if empty($schleuder::database_config) or $schleuder::database_config['adapter'] == 'sqlite3' {
+    if empty($schleuder::database_config) or !$schleuder::database_config['database'] {
+      $db_file = '/var/lib/schleuder/db.sqlite'
+    } else {
+      $db_file = $schleuder::database_config['database']
+    }
+    file{
+      $db_file:
+        owner   => 'schleuder',
+        group   => 'schleuder',
+        mode    => '0640',
+        require => Exec['schleuder install'],
+        before  => Service['schleuder-api-daemon'],
+    }
   }
 }

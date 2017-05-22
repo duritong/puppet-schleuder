@@ -1,0 +1,16 @@
+{
+  "name": "duritong-schleuder",
+  "version": "0.0.1",
+  "author": "duritong",
+  "summary": "Puppet module to manage schleuder installation and lists",
+  "license": "Apache License, Version 2.0",
+  "source": "git://github.com/duritong/puppet-schleuder.git",
+  "project_page": "https://github.com/duritong/puppet-schleuder",
+  "issues_url": "https://github.com/duritong/puppet-schleuder/issues",
+  "description": "Schleuder is an encrypted mailinglist manager",
+  "dependencies": [
+    {"name":"puppetlabs/concat","version_requirement":">= 1.1.0"},
+    {"name":"puppetlabs/stdlib","version_requirement":">= 3.2.0"},
+    {"name":"puppet/healthcheck","version_requirement":">= 0.2.0"}
+  ]
+}

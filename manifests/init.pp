@@ -10,16 +10,24 @@
 #
 
 # The following variables are possible to tune this module:
-#
-# schleuder_enable_highline:
-#   wether we'd like to install highline support for
-#   schleuder or not.
-# schleuder_install_dir:
-#   The directory in which you'd like to install schleuder
-#   Default: '/opt/schleuder',
 class schleuder(
-  $enable_highline = true,
-  $install_dir     = '/opt/schleuder',
+  $valid_api_keys  = [],
+  $cli_api_key     = undef,
+  $tls_fingerprint = getvar('::schleuder_tls_fingerprint'),
+  $api_host        = 'localhost',
+  $api_port        = '4443',
+  $use_shorewall   = false,
+  $database_config = {},
+  $adminkeys_path  = 'modules/site_schleuder/adminkeys',
+  $lists           = {},
 ) {
-  include schleuder::base
+  case $operatingsystem {
+    'CentOS': { include schleuder::centos }
+    default: { include schleuder::base }
+  }
+  if $use_shorewall and $api_host != 'localhost' {
+    include schleuder::shorewall
+  }
+
+  create_resources('schleuder::list',$lists)
 }
