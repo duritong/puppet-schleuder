@@ -40,11 +40,11 @@ class schleuder::client(
     # trick the manually generated cert fingerprint
     # into the first run, if possible
     Concat::Fragment['schleuder-cli-fingerprint']{
-      content => ''
+      source  => '/tmp/schleuder-cli-fingerprint.tmp',
     }
-    exec{"schleuder cert fingerprint | awk -F: '{ print \"tls_fingerprint: \"\$2 }' >> /root/.schleuder-cli/schleuder-cli.yml":
-      require => Concat['/root/.schleuder-cli/schleuder-cli.yml'],
-      before  => Package['schleuder-cli'],
+    Http_conn_validator<| title == 'schleuder-api-ready' |> -> exec{'dump_schleuder_cli':
+      command => "schleuder cert fingerprint | awk -F: '{ print \"tls_fingerprint:\"\$2 }' > /tmp/schleuder-cli-fingerprint.tmp",
+      before  => Concat::Fragment['schleuder-cli-fingerprint'],
       onlyif  => 'bash -c "test -x /usr/bin/schleuder"',
     }
   }
