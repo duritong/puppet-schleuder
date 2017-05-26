@@ -26,7 +26,7 @@ define schleuder::list(
       }
       if !$admin_publickey {
         File[$real_admin_publickey]{
-          source  => "puppet:///${schleuder::adminkeys_path}/${adminaddress}.pub",
+          source  => "puppet:///${schleuder::adminkeys_path}/${admin}.pub",
         }
       } elsif $admin_publickey =~ /^puppet:\/\// {
         File[$real_admin_publickey]{
