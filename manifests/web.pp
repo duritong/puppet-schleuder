@@ -7,7 +7,9 @@ class schleuder::web(
   $web_hostname        = 'example.org',
   $mailer_from         = 'noreply@example.org',
   $database_config     = {},
+  $ruby_scl            = 'ruby23',
 ){
+  require "::scl::${ruby_scl}"
   package{'schleuder-web':
     ensure => present,
   } -> file{
@@ -21,5 +23,11 @@ class schleuder::web(
       owner   => root,
       group   => 'schleuder-web',
       mode    => '0640';
+  } ~> exec{'setup-schleuder-web':
+    command     => "scl enable rh-${ruby_scl} 'bundle exec rake db:setup RAILS_ENV=production'",
+    pwd         => '/var/www/schleuder-web',
+    refreshonly => true,
+    user        => 'schleuder-web',
+    group       => 'schleuder-web',
   }
 }
