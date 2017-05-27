@@ -1,0 +1,13 @@
+production:
+<% if scope['schleuder::web::database_config'].empty? -%>
+  adapter:  'sqlite3'
+  database: db/production.sqlite3
+  pool: 5
+  timeout: 5000
+<% else
+  scope['schleuder::web::database_config'].keys.sort.each do |k|
+-%>
+  <%= k %>: '<%= scope['schleuder::web::database_config'][k] %>'
+<% end
+end-%>
+
