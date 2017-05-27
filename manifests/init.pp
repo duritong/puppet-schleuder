@@ -11,16 +11,19 @@
 
 # The following variables are possible to tune this module:
 class schleuder(
-  $valid_api_keys  = [],
-  $cli_api_key     = undef,
-  $tls_fingerprint = getvar('::schleuder_tls_fingerprint'),
-  $api_host        = 'localhost',
-  $api_port        = '4443',
-  $use_shorewall   = false,
-  $database_config = {},
-  $superadmin      = 'root@localhost',
-  $adminkeys_path  = 'modules/site_schleuder/adminkeys',
-  $lists           = {},
+  $valid_api_keys         = [],
+  $cli_api_key            = undef,
+  $tls_fingerprint        = getvar('::schleuder_tls_fingerprint'),
+  $export_tls_fingerprint = false,
+  $api_host               = 'localhost',
+  $api_port               = '4443',
+  $use_shorewall          = false,
+  $database_config        = {},
+  $superadmin             = 'root@localhost',
+  $adminkeys_path         = 'modules/site_schleuder/adminkeys',
+  $lists                  = {},
+  $web_api_key            = undef,
+  $export_web_api_key     = false,
 ) {
   case $operatingsystem {
     'CentOS': { include schleuder::centos }

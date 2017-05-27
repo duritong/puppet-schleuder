@@ -62,6 +62,9 @@ api:
 <% if scope['schleuder::cli_api_key'] -%>
     - <%= scope['schleuder::cli_api_key'] %>
 <% end -%>
+<% if scope['schleuder::web_api_key'] -%>
+    - <%= scope['schleuder::web_api_key'] %>
+<% end -%>
 <% scope['schleuder::valid_api_keys'].sort.each do |key| -%>
     - <%= key %>
 <% end -%>
