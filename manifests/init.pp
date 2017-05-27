@@ -18,6 +18,7 @@ class schleuder(
   $api_port        = '4443',
   $use_shorewall   = false,
   $database_config = {},
+  $superadmin      = 'root@localhost',
   $adminkeys_path  = 'modules/site_schleuder/adminkeys',
   $lists           = {},
 ) {

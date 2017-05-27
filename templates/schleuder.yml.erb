@@ -19,6 +19,8 @@ log_level: warn
 # The default works for all supported versions of gnupg:
 keyserver: pool.sks-keyservers.net
 
+# who receives global schleuder notifications
+superadmin: <%= scope['schleuder::superadmin'] %>
 
 # For these options see documentation for ActionMailer::smtp_settings, e.g. <http://api.rubyonrails.org/classes/ActionMailer/Base.html>.
 smtp_settings:
