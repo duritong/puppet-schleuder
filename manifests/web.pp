@@ -41,7 +41,7 @@ end
       group   => 'schleuder-web',
       mode    => '0640';
   } ~> exec{'setup-schleuder-web':
-    command     => "scl enable rh-${ruby_scl} 'bundle exec rake db:setup RAILS_ENV=production'",
+    command     => "scl enable rh-${ruby_scl} 'bundle exec rake RAILS_ENV=production SCHLEUDER_TLS_FINGERPRINT=stubvalue SCHLEUDER_API_KEY=stubvalue SECRET_KEY_BASE=stubvalue SCHLEUDER_API_HOST=somehost SCHLEUDER_WEB_HOSTNAME=somehost'",
     cwd         => '/var/www/schleuder-web',
     refreshonly => true,
     user        => 'schleuder-web',
