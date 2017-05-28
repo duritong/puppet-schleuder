@@ -14,7 +14,7 @@ class schleuder::web(
   package{'schleuder-web':
     ensure => present,
   } -> file{
-    '/var/www/schleuder-web/config/initializers/01_erb_config.rb'
+    '/var/www/schleuder-web/config/initializers/01_erb_config.rb':
       content => "# https://0xacab.org/schleuder/schleuder-web/issues/62
 module Squire
   module Parser
