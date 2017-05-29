@@ -11,7 +11,10 @@ class schleuder::web(
   $use_shorewall       = false,
 ){
   require "::scl::${ruby_scl}"
-  package{'schleuder-web':
+  semanage::fcontext{
+    '/var/www/schleuder-web/log(/.*)?':
+      setype => 'httpd_log_t',
+  } -> package{'schleuder-web':
     ensure => present,
   } -> file{
     '/var/www/schleuder-web/config/initializers/01_erb_config.rb':
@@ -46,6 +49,22 @@ end
     refreshonly => true,
     user        => 'schleuder-web',
     group       => 'schleuder-web',
+  } -> file{
+    '/etc/logrotate.d/schleuder-web':
+      content => "/var/www/schleuder-web/*.log {
+  daily
+  dateext
+  missingok
+  rotate 7
+  compress
+  copytruncate
+  notifempty
+  su schleuder-web schleuder-web
+}
+",
+    owner => root,
+    group => 0,
+    mode  => '0644',
   }
   if $use_shorewall and $api_host != 'localhost' {
     include schleuder::web::shorewall
