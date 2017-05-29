@@ -4,6 +4,7 @@ describe 'schleuder::web' do
   let(:facts){
     {
       :operatingsystem => 'CentOS',
+      :operatingsystemmajrelease => '7',
       :concat_basedir  => '/tmp',
     }
   }

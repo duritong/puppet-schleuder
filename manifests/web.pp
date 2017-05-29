@@ -11,7 +11,7 @@ class schleuder::web(
   $use_shorewall       = false,
 ){
   require "::scl::${ruby_scl}"
-  semanage::fcontext{
+  selinux::fcontext{
     '/var/www/schleuder-web/db/.*sqlite3':
       setype => 'httpd_sys_rw_content_t';
     '/var/www/schleuder-web/tmp(/.*)?':
