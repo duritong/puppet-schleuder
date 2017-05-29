@@ -12,8 +12,12 @@ class schleuder::web(
 ){
   require "::scl::${ruby_scl}"
   semanage::fcontext{
+    '/var/www/schleuder-web/db/.*sqlite3':
+      setype => 'httpd_sys_rw_content_t';
+    '/var/www/schleuder-web/tmp(/.*)?':
+      setype => 'httpd_sys_rw_content_t';
     '/var/www/schleuder-web/log(/.*)?':
-      setype => 'httpd_log_t',
+      setype => 'httpd_log_t';
   } -> package{'schleuder-web':
     ensure => present,
   } -> file{
