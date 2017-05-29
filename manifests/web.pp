@@ -55,7 +55,7 @@ end
     group       => 'schleuder-web',
   } -> file{
     '/etc/logrotate.d/schleuder-web':
-      content => "/var/www/schleuder-web/*.log {
+      content => "/var/www/schleuder-web/*log {
   daily
   dateext
   missingok
