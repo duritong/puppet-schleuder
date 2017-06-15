@@ -17,4 +17,7 @@ class schleuder::shorewall {
   } elsif $schleuder::database_config['adapter'] == 'mysql' {
     include shorewall::rules::out::mysql
   }
+
+  # to refresh keys
+  include shorewall::rules::out::keyserver
 }
