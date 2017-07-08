@@ -7,15 +7,17 @@ class schleuder::base {
     owner   => 'root',
     group   => 'schleuder',
     mode    => '0640',
+    seltype => 'schleuder_data_t',
   } ~> exec{'schleuder install':
     refreshonly => true,
     notify      => Service['schleuder-api-daemon'],
   } -> file{
     ['/etc/schleuder/schleuder-certificate.pem',
     '/etc/schleuder/schleuder-private-key.pem']:
-      owner => root,
-      group => 'schleuder',
-      mode  => '0640';
+      seltype => 'schleuder_data_t',
+      owner   => root,
+      group   => 'schleuder',
+      mode    => '0640';
   } ~> service{'schleuder-api-daemon':
     ensure => running,
     enable => true,
@@ -36,6 +38,7 @@ class schleuder::base {
     owner   => 'root',
     group   => 'schleuder',
     mode    => '0640',
+    seltype => 'schleuder_data_t',
     purge   => true,
     force   => true,
     recurse => true,
@@ -64,6 +67,7 @@ class schleuder::base {
         owner   => 'schleuder',
         group   => 'schleuder',
         mode    => '0640',
+        seltype => 'schleuder_data_t',
         require => Exec['schleuder install'],
         before  => Service['schleuder-api-daemon'],
     }

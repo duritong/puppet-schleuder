@@ -9,14 +9,16 @@ class schleuder::client(
   # when the package is being installed
   file{
     '/root/.schleuder-cli':
-      ensure => directory,
-      owner  => root,
-      group  => 0,
-      mode   => '0600',
+      ensure  => directory,
+      owner   => root,
+      group   => root,
+      mode    => '0600',
+      seltype => 'schleuder_data_t',
   } -> concat{'/root/.schleuder-cli/schleuder-cli.yml':
-    owner => root,
-    group => 0,
-    mode  => '0600',
+    owner   => root,
+    group   => root,
+    mode    => '0600',
+    seltype => 'schleuder_data_t',
   } -> package{'schleuder-cli':
     ensure => installed,
   }
