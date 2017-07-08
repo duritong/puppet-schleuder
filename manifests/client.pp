@@ -18,7 +18,8 @@ class schleuder::client(
     owner   => root,
     group   => root,
     mode    => '0600',
-    seltype => 'schleuder_data_t',
+    #todo: enable once concat supports that
+    #seltype => 'schleuder_data_t',
   } -> package{'schleuder-cli':
     ensure => installed,
   }
