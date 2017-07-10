@@ -4,6 +4,7 @@ describe 'schleuder' do
   let(:facts){
     {
       :operatingsystem => 'CentOS',
+      :puppetversion   => ENV['PUPPET_VERSION'].nil? ? '5.0.0' : ENV['PUPPET_VERSION'],
       :concat_basedir  => '/tmp',
     }
   }
