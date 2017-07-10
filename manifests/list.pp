@@ -15,7 +15,7 @@ define schleuder::list(
       ensure => $ensure,
   }
   if $ensure == present {
-    if $admin_publickey =~ /^\// {
+    if "${admin_publickey}" =~ /^\// {
       $real_admin_publickey = $admin_publickey
     } else {
       $real_admin_publickey = "/var/lib/schleuder/adminkeys/${name}_${admin}.pub"
