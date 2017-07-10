@@ -20,9 +20,10 @@ define schleuder::list(
     } else {
       $real_admin_publickey = "/var/lib/schleuder/adminkeys/${name}_${admin}.pub"
       file{$real_admin_publickey:
-        owner => 'root',
-        group => 'schleuder',
-        mode  => '0640'
+        owner   => 'root',
+        group   => 'schleuder',
+        mode    => '0640'
+        seltype => 'schleuder_data_t',
       }
       if !$admin_publickey {
         File[$real_admin_publickey]{
