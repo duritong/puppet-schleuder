@@ -66,9 +66,9 @@ end
   su schleuder-web schleuder-web
 }
 ",
-    owner => root,
-    group => 0,
-    mode  => '0644',
+    owner     => root,
+    group     => 0,
+    mode      => '0644',
   }
   if $use_shorewall and $api_host != 'localhost' {
     include schleuder::web::shorewall
