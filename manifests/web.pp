@@ -21,22 +21,6 @@ class schleuder::web(
   } -> package{'schleuder-web':
     ensure => present,
   } -> file{
-    '/var/www/schleuder-web/config/initializers/01_erb_config.rb':
-      content => "# https://0xacab.org/schleuder/schleuder-web/issues/62
-module Squire
-  module Parser
-    module YAML
-      def self.parse(path)
-        ::YAML::load(ERB.new(File.read(path)).result)
-      end
-    end
-  end
-end
-",
-      replace => false,
-      owner   => root,
-      group   => 'schleuder-web',
-      mode    => '0640';
     '/var/www/schleuder-web/config/database.yml':
       content => template('schleuder/web/database.yml.erb'),
       owner   => root,
