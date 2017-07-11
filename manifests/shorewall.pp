@@ -1,4 +1,6 @@
-# schleuder api daemon
+# Open up schleuder api daemon port
+# and outgoing connections to a database
+# and a keyserver.
 class schleuder::shorewall {
   $port = $schleuder::api_port
   shorewall::rule { "net-me-${port}-tcp":
