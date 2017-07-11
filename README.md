@@ -26,6 +26,37 @@ manner.
 
 Further usage examples are explained in the different parts. See [examples](README.md#examples) for specific code details.
 
+### Examples
+
+A simple fully functional installation of schleuder, with `schleuder-api-daemon` running:
+
+    include schleuder
+
+An installation of schleuder, with `schleuder-api-daemon` running and `schleuder-cli` configured (required to manage lists!). It uses a semi-random cli api key based on the node's fqdn:
+
+    class{'schleuder':
+      cli_api_key => sha1("${fqdn_rand(1204,'cli')}"),
+    }
+
+Same setup, but with 2 lists configured:
+
+    class{'schleuder':
+      cli_api_key => sha1("${fqdn_rand(1204,'cli')}"),
+      lists       => {
+        list1@example.com => {
+          admin => admin@example.com,
+        },
+        list2@example2.com => {
+          admin => user@example.com,
+        },
+      },
+    }
+
+We recommend you to use [Hiera](https://docs.puppet.com/hiera/) to do further configuration.
+
+
+See [schleuder-vagrant](https://0xacab.org/schleuder/schleuder-vagrant) as an example on how it can be used.
+
 ### Requirements
 
 This module requires a set of other modules to work. See [Puppetfile](Puppetfile) for a detailed dependency list.
@@ -118,37 +149,6 @@ It is possible to purge all unmanaged schleuder lists using puppet's [resources-
 ### Facts
 
 * `schleuder_tls_fingerprint`: Output of `schleuder cert fingerprint`.
-
-### Examples
-
-A simple fully functional installation of schleuder, with `schleuder-api-daemon` running:
-
-    include schleuder
-
-An installation of schleuder, with `schleuder-api-daemon` running and `schleuder-cli` configured (required to manage lists!). It uses a semi-random cli api key based on the node's fqdn:
-
-    class{'schleuder':
-      cli_api_key => sha1("${fqdn_rand(1204,'cli')}"),
-    }
-
-Same setup, but with 2 lists configured:
-
-    class{'schleuder':
-      cli_api_key => sha1("${fqdn_rand(1204,'cli')}"),
-      lists       => {
-        list1@example.com => {
-          admin => admin@example.com,
-        },
-        list2@example2.com => {
-          admin => user@example.com,
-        },
-      },
-    }
-
-We recommend you to use [Hiera](https://docs.puppet.com/hiera/) to do further configuration.
-
-
-See [schleuder-vagrant](https://0xacab.org/schleuder/schleuder-vagrant) as an example on how it can be used.
 
 ## Limitations
 
