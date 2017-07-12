@@ -22,7 +22,7 @@ define schleuder::list(
       file{$real_admin_publickey:
         owner   => 'root',
         group   => 'schleuder',
-        mode    => '0640'
+        mode    => '0640',
         seltype => 'schleuder_data_t',
       }
       if !$admin_publickey {
