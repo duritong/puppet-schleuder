@@ -3,6 +3,7 @@ define schleuder::list(
   $ensure          = present,
   $admin           = undef,
   $admin_publickey = undef,
+  $send_list_key   = true,
 ){
   if ($ensure == 'present') and !$admin {
     fail("Must pass adminaddress to Schleuder::List[${name}]")
@@ -42,6 +43,14 @@ define schleuder::list(
     Schleuder_list[$name]{
       admin_publickey => $real_admin_publickey,
       admin           => $admin,
+    }
+    if $send_list_key {
+      exec{"schleuder-cli lists send-list-key-to-subscriptions ${name}":
+        environment => ['HOME=/root'],
+        tag         => 'schleuder-cli-send-list-key-to-subscriptions',
+        refreshonly => true,
+        subscribe   => Schleuder_list[$name],
+      }
     }
   }
 }
