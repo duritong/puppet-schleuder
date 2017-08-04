@@ -28,6 +28,7 @@ class schleuder::web(
     command     => "scl enable rh-${ruby_scl} 'bundle exec rake db:setup RAILS_ENV=production SCHLEUDER_TLS_FINGERPRINT=stubvalue SCHLEUDER_API_KEY=stubvalue SECRET_KEY_BASE=stubvalue SCHLEUDER_API_HOST=somehost SCHLEUDER_WEB_HOSTNAME=somehost'",
     cwd         => '/var/www/schleuder-web',
     refreshonly => true,
+    onlyif      => "scl enable rh-${ruby_scl} 'bundle exec rake db:version RAILS_ENV=production SCHLEUDER_TLS_FINGERPRINT=stubvalue SCHLEUDER_API_KEY=stubvalue SECRET_KEY_BASE=stubvalue SCHLEUDER_API_HOST=somehost SCHLEUDER_WEB_HOSTNAME=somehost' | grep -E '^Current version: 0\$'",
     user        => 'schleuder-web',
     group       => 'schleuder-web',
   }
