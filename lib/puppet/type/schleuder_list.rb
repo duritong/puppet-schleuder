@@ -1,5 +1,5 @@
 module Puppet
-  newtype(:schleuder_list) do
+  Type.newtype(:schleuder_list) do
     @doc = "Manage schleuder lists.  This resource type can only create
       and remove lists; it cannot currently reconfigure them."
 
