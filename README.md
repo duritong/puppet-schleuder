@@ -120,7 +120,7 @@ Parameters are managing configuration of schleuder-web. See [schleuder-web's con
 * `web_hostname`: Hostname of the vhost, serving this schleuder installation. Default: `example.org`. Will be used in emails sent by [schleuder-web](https://0xacab.org/schleuder/schleuder-web).
 * `mailer_from`: Sender of the sign-up emails. Default: `noreply@example.org`
 * `database_config`A possible hash of an activerecord-based database configuration. Defaults: `{}` -> schleuder-web uses sqlite.
-* `ruby_scl`: Which scl version it uses. Default: `ruby23`.
+* `ruby_scl`: Which scl version it uses. Default: `ruby24`.
 * `use_shorewall`: Whether or not to open up connectivity TO a `schleuder-api-daemon`.
 
 ### schleuder::list

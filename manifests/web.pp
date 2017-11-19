@@ -7,7 +7,7 @@ class schleuder::web(
   $web_hostname        = 'example.org',
   $mailer_from         = 'noreply@example.org',
   $database_config     = {},
-  $ruby_scl            = 'ruby23',
+  $ruby_scl            = 'ruby24',
   $use_shorewall       = false,
 ){
   require "::scl::${ruby_scl}"
