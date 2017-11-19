@@ -28,9 +28,6 @@ class schleuder::base {
     test_url      => '/status.json',
     # api likely uses custom certs
     verify_peer   => false,
-    # at the moment api requires always
-    # authentication
-    expected_code => 401,
   }
 
   file{'/var/lib/schleuder/adminkeys':
