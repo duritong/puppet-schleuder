@@ -22,12 +22,12 @@ class schleuder::base {
     ensure => running,
     enable => true,
   } -> http_conn_validator { 'schleuder-api-ready':
-    host          => $schleuder::api_host,
-    port          => $schleuder::api_port,
-    use_ssl       => true,
-    test_url      => '/status.json',
+    host        => $schleuder::api_host,
+    port        => $schleuder::api_port,
+    use_ssl     => true,
+    test_url    => '/status.json',
     # api likely uses custom certs
-    verify_peer   => false,
+    verify_peer => false,
   }
 
   file{'/var/lib/schleuder/adminkeys':
@@ -88,7 +88,7 @@ class schleuder::base {
   }
 
   if $schleuder::gpg_use_tor {
-    include tor::daemon
+    include ::tor::daemon
     file{
       '/var/lib/schleuder/.gnupg':
         ensure  => directory,

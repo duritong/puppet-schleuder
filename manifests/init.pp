@@ -26,7 +26,7 @@ class schleuder(
   $export_web_api_key     = false,
   $gpg_use_tor            = false,
 ) {
-  case $operatingsystem {
+  case $facts['operatingsystem'] {
     'CentOS': { include schleuder::centos }
     default: { include schleuder::base }
   }
