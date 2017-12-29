@@ -43,7 +43,7 @@ class schleuder::base {
   }
 
   if $schleuder::cli_api_key {
-    class{'schleuder::client':
+    class{'::schleuder::client':
       api_key         => $schleuder::cli_api_key,
       tls_fingerprint => $schleuder::tls_fingerprint,
       host            => $schleuder::api_host,
@@ -72,7 +72,7 @@ class schleuder::base {
   # export data as fragment, so it can be collected somewhere else
   if $schleuder::tls_fingerprint and $schleuder::export_tls_fingerprint {
     @@concat::fragment{
-      "schleuder-tls-fingerprint-${fqdn}":
+      "schleuder-tls-fingerprint-${facts['fqdn']}":
         target  => '/tmp/some_path_for_tls_fingerprint',
         content => $schleuder::tls_fingerprint,
         order   => '050';
@@ -80,7 +80,7 @@ class schleuder::base {
   }
   if $schleuder::web_api_key and $schleuder::export_web_api_key {
     @@concat::fragment{
-      "schleuder-web-api-key-${fqdn}":
+      "schleuder-web-api-key-${facts['fqdn']}":
         target  => '/tmp/some_path_for_web_api_key',
         content => $schleuder::web_api_key,
         order   => '050';
