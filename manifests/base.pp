@@ -95,7 +95,7 @@ class schleuder::base {
         owner   => 'schleuder',
         group   => 'schleuder',
         mode    => '0600',
-        require => Package['package'];
+        require => Package['schleuder'];
       '/var/lib/schleuder/.gnupg/dirmngr.conf':
         content => template('schleuder/dirmngr.conf.erb'),
         owner   => 'schleuder',
