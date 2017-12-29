@@ -86,4 +86,22 @@ class schleuder::base {
         order   => '050';
     }
   }
+
+  if $schleuder::gpg_use_tor {
+    include tor::daemon
+    file{
+      '/var/lib/schleuder/.gnupg':
+        ensure  => directory,
+        owner   => 'schleuder',
+        group   => 'schleuder',
+        mode    => '0600',
+        require => Package['package'];
+      '/var/lib/schleuder/.gnupg/dirmngr.conf':
+        content => template('schleuder/dirmngr.conf.erb'),
+        owner   => 'schleuder',
+        group   => 'schleuder',
+        mode    => '0600',
+        require => Service['tor'],
+    }
+  }
 }
