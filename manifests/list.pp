@@ -21,8 +21,8 @@ define schleuder::list(
       # every gnupg homedir needs this config
       file{"/var/lib/schleuder/lists/${parts[1]}/${parts[0]}/dirmngr.conf":
         source  => '/var/lib/schleuder/.gnupg/dirmngr.conf',
-        owner   => 'root',
-        group   => 'root',
+        owner   => 'schleuder',
+        group   => 'schleuder',
         mode    => '0600',
         require => Schleuder_list[$name],
       }
