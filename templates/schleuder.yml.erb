@@ -17,7 +17,14 @@ log_level: warn
 # If you have gnupg 2.1 and TOR running locally, use a onion-keyserver:
 #keyserver: hkp://jirk5u4osbsr34t5.onion
 # The default works for all supported versions of gnupg:
-keyserver: pool.sks-keyservers.net
+#keyserver: pool.sks-keyservers.net
+keyserver: <%= if scope['schleuder::gpg_keyserver']
+     scope['schleuder::gpg_keyserver']
+   elsif scope['schleuder::gpg_use_tor']
+     'hkp://jirk5u4osbsr34t5.onion'
+   else
+     'pool.sks-keyservers.net'
+   end %>
 
 # who receives global schleuder notifications
 superadmin: <%= scope['schleuder::superadmin'] %>
