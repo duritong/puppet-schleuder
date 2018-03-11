@@ -1,0 +1,51 @@
+---
+<% if !@subject_filters.empty? -%>
+subject_filters:
+<% @subject_filters.sort.each do |f| -%>
+  - '<%= f %>'
+<% end
+else -%>
+subject_filters: []
+<% end -%>
+
+<% if !@sender_filters.empty? -%>
+sender_filters:
+<% @sender_filters.sort.each do |f| -%>
+  - '<%= f %>'
+<% end
+else -%>
+sender_filters: []
+<% end -%>
+<% if @gitlab -%>
+
+gitlab:
+  endpoint: '<%= @gitlab['endpoint'] %>'
+  token: '<%= @gitlab['token'] %>'
+<% end -%>
+
+lists:
+<% @lists.keys.sort.each do |l| -%>
+  '<%= l %>':
+<% ['project','namespace','ticket_prefix'].each do |v|
+  if @lists[l][v] -%>
+    <%= v %>: '<%= @lists[l][v] %>'
+<% end
+  end
+  if @lists[l]['subject_filters'] -%>
+    subject_filters:
+<% @lists[l]['subject_filters'].sort.each do |f| -%>
+      - '<%= f %>'
+<% end
+  end
+  if @lists[l]['sender_filters'] -%>
+    sender_filters:
+<% @lists[l]['sender_filters'].sort.each do |f| -%>
+      - '<%= f %>'
+<% end
+  end
+  if @lists[l]['gitlab'] -%>
+    gitlab:
+      endpoint: '<%= @lists[l]['gitlab']['endpoint'] %>'
+      token: '<%= @lists[l]['gitlab']['token'] %>'
+<% end
+end -%>
