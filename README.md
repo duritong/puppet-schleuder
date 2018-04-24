@@ -1,6 +1,6 @@
 # schleuder puppet module
 
-Puppet module for [schleuder](https://schleuder.nadir.org), a gpg-enabled mailing list manager with resending-capabilities.
+Puppet module for [schleuder](https://schleuder.org), a gpg-enabled mailing list manager with resending-capabilities.
 
 #### Table of Contents
 
@@ -12,7 +12,7 @@ Puppet module for [schleuder](https://schleuder.nadir.org), a gpg-enabled mailin
 ## Description
 
 
-Manages the installation, configuration of [schleuder](https://schleuder.nadir.org), the schleuder-api-daemon and cli tool `schleuder-cli`.
+Manages the installation, configuration of [schleuder](https://schleuder.org), the schleuder-api-daemon and cli tool `schleuder-cli`.
 
 Furthermore, you are able to create and delete list instances.
 
@@ -76,7 +76,7 @@ module does not manage any special repositories or priorities of package sources
 
 The main class to be used, it allows to install and configure schleuder, schleuder-api-daemon and optionally schleuder-cli.
 
-Parameters are managing configuration of schleuder. See schleuder's [documentation](https://schleuder.nadir.org/docs/#configuration) or its [config directory](https://0xacab.org/schleuder/schleuder/tree/master/etc) for the different configuration options and this [puppet-module's templates](templates/)
+Parameters are managing configuration of schleuder. See schleuder's [documentation](https://schleuder.org/docs/#configuration) or its [config directory](https://0xacab.org/schleuder/schleuder/tree/master/etc) for the different configuration options and this [puppet-module's templates](templates/)
 
 #### Parameters
 
