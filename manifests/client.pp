@@ -1,7 +1,7 @@
 # manage schleuder cli installation
 class schleuder::client(
   $api_key,
-  $tls_fingerprint = $schleuder_tls_fingerprint,
+  $tls_fingerprint = $facts['schleuder_tls_fingerprint'],
   $host            = 'localhost',
   $port            = '4443',
 ){
