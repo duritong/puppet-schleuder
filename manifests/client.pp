@@ -15,17 +15,12 @@ class schleuder::client(
       mode    => '0600',
       seltype => 'schleuder_data_t',
   } -> concat{'/root/.schleuder-cli/schleuder-cli.yml':
-    owner => root,
-    group => root,
-    mode  => '0600',
+    owner   => root,
+    group   => root,
+    mode    => '0600',
+    seltype => 'schleuder_data_t',
   } -> package{'schleuder-cli':
     ensure => installed,
-  }
-  # old concat versions don't support that yet
-  if versioncmp($puppetversion,'4.0') >= 0 {
-    Concat['/root/.schleuder-cli/schleuder-cli.yml']{
-      seltype => 'schleuder_data_t',
-    }
   }
 
   # we use a fragement to trick around the fingerprint
