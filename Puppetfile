@@ -7,7 +7,7 @@ else
   mod 'puppetlabs-concat'
 end
 mod 'puppet-healthcheck'
-mod 'scl', :git => 'https://code.immerda.ch/immerda/puppet-modules/scl'
-mod 'selinux', :git => 'https://code.immerda.ch/immerda/puppet-modules/selinux'
-mod 'tor', :git => 'https://code.immerda.ch/immerda/puppet-modules/tor'
+mod 'scl', :git => 'https://code.immerda.ch/immerda/puppet-modules/scl.git'
+mod 'selinux', :git => 'https://code.immerda.ch/immerda/puppet-modules/selinux.git'
+mod 'tor', :git => 'https://code.immerda.ch/immerda/puppet-modules/tor.git'
 
