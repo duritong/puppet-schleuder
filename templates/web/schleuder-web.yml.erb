@@ -20,9 +20,9 @@ production:
     port: <%= @api_port %>
     tls_fingerprint: <%= @api_tls_fingerprint %>
   api_key: <%= @api_key %>
+<% unless (a=Array(@superadmins)).empty? -%>
   superadmins:
-<% unless (a=Array(@superadmins)).empty?
-      a.each do |admin| -%>
+<% a.each do |admin| -%>
     - <%= admin %>
 <% end
 end-%>
