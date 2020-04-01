@@ -4,11 +4,11 @@ class schleuder::web(
     $api_key,
   String
     $api_tls_fingerprint = getvar('::schleuder_tls_fingerprint'),
-  Stdlib::Fqdn
+  String
     $api_host            = 'localhost',
   Integer
     $api_port            = 4443,
-  Stdlib::Fqdn
+  String
     $web_hostname        = 'example.org',
   String
     $mailer_from         = 'noreply@example.org',
