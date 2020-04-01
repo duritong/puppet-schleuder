@@ -1,14 +1,25 @@
 # manage a schleuder-web basic installation
 class schleuder::web(
-  $api_key,
-  $api_tls_fingerprint = getvar('::schleuder_tls_fingerprint'),
-  $api_host            = 'localhost',
-  $api_port            = '4443',
-  $web_hostname        = 'example.org',
-  $mailer_from         = 'noreply@example.org',
-  $database_config     = {},
-  $ruby_scl            = 'ruby26',
-  $use_shorewall       = false,
+  String
+    $api_key,
+  String
+    $api_tls_fingerprint = getvar('::schleuder_tls_fingerprint'),
+  Stdlib::Fqdn
+    $api_host            = 'localhost',
+  Integer
+    $api_port            = 4443,
+  Stdlib::Fqdn
+    $web_hostname        = 'example.org',
+  String
+    $mailer_from         = 'noreply@example.org',
+  Hash
+    $database_config     = {},
+  Pattern[/^ruby\d+/]
+    $ruby_scl            = 'ruby26',
+  Boolean
+    $use_shorewall       = false,
+  Optional[Array[String]]
+    $superadmins         = [],
 ){
   require "::scl::${ruby_scl}"
   package{'schleuder-web':
