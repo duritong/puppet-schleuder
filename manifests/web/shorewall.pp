@@ -1,7 +1,7 @@
 # schleuder api daemon
 class schleuder::web::shorewall {
   $port = $schleuder::web::api_port
-  shorewall::rule { "me-net-${port}-tcp":
+  shorewall::rule { "me-net-schleuder-api-${port}-tcp":
     source          => '$FW',
     destination     => 'net',
     proto           => 'tcp',

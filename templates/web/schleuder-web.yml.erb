@@ -10,6 +10,8 @@ defaults: &defaults
     address: localhost
     port: 25
     #openssl_verify_mode: none
+  superadmins:
+    - root@localhost
 
 production:
   <<: *defaults
@@ -18,4 +20,9 @@ production:
     port: <%= @api_port %>
     tls_fingerprint: <%= @api_tls_fingerprint %>
   api_key: <%= @api_key %>
-
+  superadmins:
+<% unless (a=Array(@superadmins)).empty?
+      a.each do |admin| -%>
+    - <%= admin %>
+<% end
+end-%>
