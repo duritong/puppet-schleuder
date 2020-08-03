@@ -88,7 +88,7 @@ class schleuder::base {
   }
 
   if $schleuder::gpg_use_tor {
-    include ::tor::daemon
+    include ::tor
     file{
       '/var/lib/schleuder/.gnupg':
         ensure  => directory,
