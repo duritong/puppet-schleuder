@@ -21,7 +21,7 @@ class schleuder::web(
   Optional[Array[String]]
     $superadmins         = [],
 ){
-  require "::scl::${ruby_scl}"
+  require "scl::${ruby_scl}"
   package{'schleuder-web':
     ensure => present,
   } -> file{

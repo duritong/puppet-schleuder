@@ -28,11 +28,11 @@ class schleuder(
   $gpg_keyserver          = undef,
 ) {
   case $facts['operatingsystem'] {
-    'CentOS': { include ::schleuder::centos }
-    default: { include ::schleuder::base }
+    'CentOS': { include schleuder::centos }
+    default: { include schleuder::base }
   }
   if $use_shorewall and $api_host != 'localhost' {
-    include ::schleuder::shorewall
+    include schleuder::shorewall
   }
 
   create_resources('schleuder::list',$lists)

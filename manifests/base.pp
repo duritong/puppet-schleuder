@@ -43,7 +43,7 @@ class schleuder::base {
   }
 
   if $schleuder::cli_api_key {
-    class{'::schleuder::client':
+    class{'schleuder::client':
       api_key         => $schleuder::cli_api_key,
       tls_fingerprint => $schleuder::tls_fingerprint,
       host            => $schleuder::api_host,
@@ -88,7 +88,7 @@ class schleuder::base {
   }
 
   if $schleuder::gpg_use_tor {
-    include ::tor
+    include tor
     file{
       '/var/lib/schleuder/.gnupg':
         ensure  => directory,

@@ -9,7 +9,7 @@ define schleuder::list(
     fail("Must pass adminaddress to Schleuder::List[${name}]")
   }
 
-  include ::schleuder
+  include schleuder
 
   schleuder_list{
     $name:
@@ -28,7 +28,7 @@ define schleuder::list(
       }
     }
 
-    if "${admin_publickey}" =~ /^\// {
+    if $admin_publickey and $admin_publickey =~ /^\// {
       $real_admin_publickey = $admin_publickey
     } else {
       $real_admin_publickey = "/var/lib/schleuder/adminkeys/${name}_${admin}.pub"
