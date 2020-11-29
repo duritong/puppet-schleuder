@@ -1,5 +1,5 @@
 # centos dependencies
 class schleuder::centos inherits schleuder::base {
-  require scl::ruby26
-  Package['rh-ruby26-ruby-devel','rh-ruby26-rubygem-bundler'] -> Package['schleuder']
+  require scl::ruby27
+  Package['rh-ruby27-ruby-devel','rh-ruby27-rubygem-bundler'] -> Package['schleuder']
 }

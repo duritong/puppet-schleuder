@@ -3,7 +3,7 @@ class schleuder::web(
   String
     $api_key,
   String
-    $api_tls_fingerprint = getvar('::schleuder_tls_fingerprint'),
+    $api_tls_fingerprint = $facts['schleuder_tls_fingerprint'],
   String
     $api_host            = 'localhost',
   Integer
@@ -15,7 +15,7 @@ class schleuder::web(
   Hash
     $database_config     = {},
   Pattern[/^ruby\d+/]
-    $ruby_scl            = 'ruby26',
+    $ruby_scl            = 'ruby27',
   Boolean
     $use_shorewall       = false,
   Optional[Array[String]]

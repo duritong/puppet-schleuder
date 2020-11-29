@@ -11,6 +11,7 @@ describe 'schleuder::web' do
   let(:params) {
     {
       :api_key => 'aaa',
+      :api_tls_fingerprint => '123',
     }
   }
   let(:pre_condition){
