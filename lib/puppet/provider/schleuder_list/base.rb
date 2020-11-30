@@ -94,8 +94,8 @@ Puppet::Type.type(:schleuder_list).provide(:base) do
 
   def wkd_fetch(email)
     local, domain = email.split('@', 2)
-    wkd_fetch2("openpgpkey.#{domain}", domain, local) || \
-      wkd_fetch2(domain, domain, local)
+    wkd_fetch2("openpgpkey.#{domain}", "#{domain}/", local) || \
+      wkd_fetch2(domain, "", local)
   end
   def wkd_hash(string)
     # Table for z-base-32 encoding.
@@ -105,7 +105,7 @@ Puppet::Type.type(:schleuder_list).provide(:base) do
   def wkd_fetch2(wkd_domain, domain, local)
     uri = URI::HTTPS.build({
       host: wkd_domain,
-      path: "/.well-known/openpgpkey/#{domain}/hu/#{wkd_hash(local)}"})
+      path: "/.well-known/openpgpkey/#{domain}hu/#{wkd_hash(local)}"})
     response = Net::HTTP.get_response(uri)
     response.body if response.code.to_i == 200
   end
