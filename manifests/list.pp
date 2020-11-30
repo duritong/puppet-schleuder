@@ -29,7 +29,13 @@ define schleuder::list(
       }
     }
 
-    if $admin_publickey {
+    $admin_publickey_missing = !$admin_publickey
+    $global_search = "${schleuder::adminkeys_path}/${admin}.pub"
+    if $admin_publickey_missing {
+      $admin_publickey_missing = file($global_search, '/dev/null') == ''
+    }
+
+    unless $admin_publickey_missing {
       if $admin_publickey =~ /^\// {
         $real_admin_publickey = $admin_publickey
       } else {
@@ -42,7 +48,7 @@ define schleuder::list(
         }
         if !$admin_publickey {
           File[$real_admin_publickey]{
-            source  => "puppet:///${schleuder::adminkeys_path}/${admin}.pub",
+            source  => "puppet:///${global_search}",
           }
         } elsif $admin_publickey =~ /^puppet:\/\// {
           File[$real_admin_publickey]{
@@ -54,7 +60,9 @@ define schleuder::list(
           }
         }
       }
-    } elsif !$admin_publickey_from_wkd {
+    }
+
+    if $admin_publickey_missing and !$admin_publickey_from_wkd {
       fail("no public key source for admin of $name")
     }
 
