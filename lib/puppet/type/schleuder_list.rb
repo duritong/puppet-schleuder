@@ -19,6 +19,10 @@ module Puppet
       desc "Path to the public key of the administrator"
     end
 
+    newparam(:admin_publickey_from_wkd) do
+      desc "Allow fetching the public key of the administrator from WKD"
+    end
+
     autorequire(:package) do
       ['schleuder-cli']
     end
