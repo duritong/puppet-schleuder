@@ -29,11 +29,9 @@ define schleuder::list(
       }
     }
 
-    $admin_publickey_missing = !$admin_publickey
     $global_search = "${schleuder::adminkeys_path}/${admin}.pub"
-    if $admin_publickey_missing {
-      $admin_publickey_missing = file($global_search, '/dev/null') == ''
-    }
+    $admin_publickey_missing =
+       !$admin_publickey and (file($global_search, '/dev/null') == '')
 
     unless $admin_publickey_missing {
       if $admin_publickey =~ /^\// {
