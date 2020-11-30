@@ -1,9 +1,10 @@
 # a small wrapper to manage init member keys and a schleuder_list
 define schleuder::list(
-  $ensure          = present,
-  $admin           = undef,
-  $admin_publickey = undef,
-  $send_list_key   = true,
+  $ensure                   = present,
+  $admin                    = undef,
+  $admin_publickey          = undef,
+  $admin_publickey_from_wkd = false,
+  $send_list_key            = true,
 ){
   if ($ensure == 'present') and !$admin {
     fail("Must pass adminaddress to Schleuder::List[${name}]")
@@ -28,33 +29,39 @@ define schleuder::list(
       }
     }
 
-    if $admin_publickey and $admin_publickey =~ /^\// {
-      $real_admin_publickey = $admin_publickey
-    } else {
-      $real_admin_publickey = "/var/lib/schleuder/adminkeys/${name}_${admin}.pub"
-      file{$real_admin_publickey:
-        owner   => 'root',
-        group   => 'schleuder',
-        mode    => '0640',
-        seltype => 'schleuder_data_t',
-      }
-      if !$admin_publickey {
-        File[$real_admin_publickey]{
-          source  => "puppet:///${schleuder::adminkeys_path}/${admin}.pub",
-        }
-      } elsif $admin_publickey =~ /^puppet:\/\// {
-        File[$real_admin_publickey]{
-          source => $admin_publickey,
-        }
+    if $admin_publickey {
+      if $admin_publickey =~ /^\// {
+        $real_admin_publickey = $admin_publickey
       } else {
-        File[$real_admin_publickey]{
-          content => $admin_publickey,
+        $real_admin_publickey = "/var/lib/schleuder/adminkeys/${name}_${admin}.pub"
+        file{$real_admin_publickey:
+          owner   => 'root',
+          group   => 'schleuder',
+          mode    => '0640',
+          seltype => 'schleuder_data_t',
+        }
+        if !$admin_publickey {
+          File[$real_admin_publickey]{
+            source  => "puppet:///${schleuder::adminkeys_path}/${admin}.pub",
+          }
+        } elsif $admin_publickey =~ /^puppet:\/\// {
+          File[$real_admin_publickey]{
+            source => $admin_publickey,
+          }
+        } else {
+          File[$real_admin_publickey]{
+            content => $admin_publickey,
+          }
         }
       }
+    } elsif !$admin_publickey_from_wkd {
+      fail("no public key source for admin of $name")
     }
+
     Schleuder_list[$name]{
-      admin_publickey => $real_admin_publickey,
-      admin           => $admin,
+      admin_publickey          => $real_admin_publickey,
+      admin_publickey_from_wkd => $admin_publickey_from_wkd,
+      admin                    => $admin,
     }
     if $send_list_key {
       exec{"schleuder-cli lists send-list-key-to-subscriptions ${name}":

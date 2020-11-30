@@ -132,6 +132,7 @@ This is a define, that wrapps the native type `schleuder_list`, mainly for conve
 * `ensure`: Whether list should be present or absent. Default: `present`
 * `admin`: Emailaddress of the initial administrator of a list. Must be present if lists' ensure is set to `present`.
 * `admin_publickey`: A source of a public key of the lists' admin. Used to subscribe the admin properly. Can be a string containing the armored public key, a full `puppet://` or local path. If not set, puppet will try to fetch it from `puppet:///${schleuder::adminkeys_path}/${admin}.pub`.
+* `admin_publickey_from_wkd`: If this boolean is true and the `admin_publickey` is missing, try to fetch the admin's public key from WKD. In this case the admin keyfile will not be managed by puppet once the list was created. The client is resposible to ensure that the key exists in WKD, otherwise creation will fail.
 
 ### schleuder_list
 
@@ -145,6 +146,7 @@ It is possible to purge all unmanaged schleuder lists using puppet's [resources-
 * `ensure`: `present` or `absent`. Default: `present`
 * `admin`: The initial adminaddress of a list. Won't be enforced, once the list is created.
 * `admin_publickey`: A local path to a file containing an armored public key of the `admin`.
+* `admin_publickey_from_wkd`: If this boolean is true and the `admin_publickey` is missing, try to fetch the admin's public key from WKD.
 
 ### Facts
 

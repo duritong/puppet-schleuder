@@ -1,5 +1,10 @@
 require 'puppet/provider/parsedfile'
 
+require 'base32'
+require 'uri'
+require 'net/http'
+require 'tempfile'
+
 Puppet::Type.type(:schleuder_list).provide(:base) do
   has_command(:cli, '/usr/bin/schleuder-cli') do
     environment({ 'HOME' => ENV['HOME'] })
@@ -35,6 +40,14 @@ Puppet::Type.type(:schleuder_list).provide(:base) do
     end
     if val = @resource[:admin_publickey]
       args << val
+    elsif @resource[:admin_publickey_from_wkd]
+      if key = wkd_fetch(@resource[:admin])
+        file = Tempfile.new
+        File.write(file, key)
+        args << file.path
+      else
+        raise ArgumentError, "Public key of the admin is not published in WKD"
+      end
     else
       raise ArgumentError, "Schleuder lists require a public key of the admin"
     end
@@ -77,6 +90,24 @@ Puppet::Type.type(:schleuder_list).provide(:base) do
       end
     end
     nil
+  end
+
+  def wkd_fetch(email)
+    local, domain = email.split('@', 2)
+    wkd_fetch2("openpgpkey.#{domain}", "#{domain}/", local) || \
+      wkd_fetch2(domain, "", local)
+  end
+  def wkd_hash(string)
+    # Table for z-base-32 encoding.
+    Base32.table = "ybndrfg8ejkmcpqxot1uwisza345h769"
+    Base32.encode(Digest::SHA1.digest(string.downcase))
+  end
+  def wkd_fetch2(wkd_domain, domain, local)
+    uri = URI::HTTPS.build({
+      host: wkd_domain,
+      path: "/.well-known/openpgpkey/#{domain}hu/#{wkd_hash(local)}"})
+    response = Net::HTTP.get_response(uri)
+    response.body if response.code.to_i == 200
   end
 end
 
