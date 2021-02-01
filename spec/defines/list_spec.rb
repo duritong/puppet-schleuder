@@ -13,7 +13,8 @@ describe 'schleuder::list', :type => 'define' do
   }
   let(:title){ 'somelist@example.com' }
   let(:params){ {
-    :admin => 'admin@example.com'
+    :admin => 'admin@example.com',
+    :admin_publickey => 'bla',
   } }
   context 'default' do
     it { is_expected.to compile.with_all_deps }
