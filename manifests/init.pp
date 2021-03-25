@@ -10,7 +10,7 @@
 #
 
 # The following variables are possible to tune this module:
-class schleuder(
+class schleuder (
   $valid_api_keys         = [],
   $cli_api_key            = undef,
   $tls_fingerprint        = getvar('::schleuder_tls_fingerprint'),
@@ -27,7 +27,7 @@ class schleuder(
   $gpg_use_tor            = false,
   $gpg_keyserver          = undef,
 ) {
-  case $facts['operatingsystem'] {
+  case $facts['os']['name'] {
     'CentOS': { include schleuder::centos }
     default: { include schleuder::base }
   }

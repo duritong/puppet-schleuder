@@ -1,31 +1,31 @@
 # manage schleuder cli installation
-class schleuder::client(
+class schleuder::client (
   $api_key,
   $tls_fingerprint = $facts['schleuder_tls_fingerprint'],
   $host            = 'localhost',
   $port            = '4443',
-){
+) {
   # place the file first, so everything is here
   # when the package is being installed
-  file{
+  file {
     '/root/.schleuder-cli':
       ensure  => directory,
       owner   => root,
       group   => root,
       mode    => '0600',
       seltype => 'schleuder_data_t',
-  } -> concat{'/root/.schleuder-cli/schleuder-cli.yml':
+  } -> concat { '/root/.schleuder-cli/schleuder-cli.yml':
     owner   => root,
     group   => root,
     mode    => '0600',
     seltype => 'schleuder_data_t',
-  } -> package{'schleuder-cli':
+  } -> package { 'schleuder-cli':
     ensure => installed,
   }
 
   # we use a fragement to trick around the fingerprint
   # into one run
-  concat::fragment{
+  concat::fragment {
     'schleuder-cli-header':
       target  => '/root/.schleuder-cli/schleuder-cli.yml',
       content => template('schleuder/schleuder-cli.yml.erb'),
@@ -35,16 +35,16 @@ class schleuder::client(
       order  => '060';
   }
   if $tls_fingerprint {
-    Concat::Fragment['schleuder-cli-fingerprint']{
+    Concat::Fragment['schleuder-cli-fingerprint'] {
       content => "tls_fingerprint: ${tls_fingerprint}\n"
     }
   } else {
     # trick the manually generated cert fingerprint
     # into the first run, if possible
-    Concat::Fragment['schleuder-cli-fingerprint']{
+    Concat::Fragment['schleuder-cli-fingerprint'] {
       source => '/tmp/schleuder-cli-fingerprint.tmp',
     }
-    Http_conn_validator<| title == 'schleuder-api-ready' |> -> exec{'dump_schleuder_cli':
+    Http_conn_validator<| title == 'schleuder-api-ready' |> -> exec { 'dump_schleuder_cli':
       command => "schleuder cert fingerprint | awk -F: '{ print \"tls_fingerprint:\"\$2 }' > /tmp/schleuder-cli-fingerprint.tmp",
       before  => Concat::Fragment['schleuder-cli-fingerprint'],
       onlyif  => 'bash -c "test -x /usr/bin/schleuder"',

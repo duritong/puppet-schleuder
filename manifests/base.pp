@@ -1,24 +1,24 @@
 # manage a schleuder installation
 class schleuder::base {
-  package{'schleuder':
+  package { 'schleuder':
     ensure => installed,
-  } -> file{'/etc/schleuder/schleuder.yml':
+  } -> file { '/etc/schleuder/schleuder.yml':
     content => template('schleuder/schleuder.yml.erb'),
     owner   => 'root',
     group   => 'schleuder',
     mode    => '0640',
     seltype => 'schleuder_data_t',
-  } ~> exec{'schleuder install':
+  } ~> exec { 'schleuder install':
     refreshonly => true,
     notify      => Service['schleuder-api-daemon'],
-  } -> file{
+  } -> file {
     ['/etc/schleuder/schleuder-certificate.pem',
     '/etc/schleuder/schleuder-private-key.pem']:
       seltype => 'schleuder_data_t',
       owner   => root,
       group   => 'schleuder',
       mode    => '0640';
-  } ~> service{'schleuder-api-daemon':
+  } ~> service { 'schleuder-api-daemon':
     ensure => running,
     enable => true,
   } -> http_conn_validator { 'schleuder-api-ready':
@@ -30,7 +30,7 @@ class schleuder::base {
     verify_peer => false,
   }
 
-  file{'/var/lib/schleuder/adminkeys':
+  file { '/var/lib/schleuder/adminkeys':
     ensure  => directory,
     owner   => 'root',
     group   => 'schleuder',
@@ -43,7 +43,7 @@ class schleuder::base {
   }
 
   if $schleuder::cli_api_key {
-    class{'schleuder::client':
+    class { 'schleuder::client':
       api_key         => $schleuder::cli_api_key,
       tls_fingerprint => $schleuder::tls_fingerprint,
       host            => $schleuder::api_host,
@@ -59,7 +59,7 @@ class schleuder::base {
     } else {
       $db_file = $schleuder::database_config['database']
     }
-    file{
+    file {
       $db_file:
         owner   => 'schleuder',
         group   => 'schleuder',
@@ -71,16 +71,16 @@ class schleuder::base {
   }
   # export data as fragment, so it can be collected somewhere else
   if $schleuder::tls_fingerprint and $schleuder::export_tls_fingerprint {
-    @@concat::fragment{
-      "schleuder-tls-fingerprint-${facts['fqdn']}":
+    @@concat::fragment {
+      "schleuder-tls-fingerprint-${facts['networking']['fqdn']}":
         target  => '/tmp/some_path_for_tls_fingerprint',
         content => $schleuder::tls_fingerprint,
         order   => '050';
     }
   }
   if $schleuder::web_api_key and $schleuder::export_web_api_key {
-    @@concat::fragment{
-      "schleuder-web-api-key-${facts['fqdn']}":
+    @@concat::fragment {
+      "schleuder-web-api-key-${facts['networking']['fqdn']}":
         target  => '/tmp/some_path_for_web_api_key',
         content => $schleuder::web_api_key,
         order   => '050';
@@ -89,7 +89,7 @@ class schleuder::base {
 
   if $schleuder::gpg_use_tor {
     include tor
-    file{
+    file {
       '/var/lib/schleuder/.gnupg':
         ensure  => directory,
         owner   => 'schleuder',

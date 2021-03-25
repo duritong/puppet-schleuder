@@ -1,30 +1,20 @@
 # manage a schleuder-web basic installation
-class schleuder::web(
-  String
-    $api_key,
-  String
-    $api_tls_fingerprint = $facts['schleuder_tls_fingerprint'],
-  String
-    $api_host            = 'localhost',
-  Integer
-    $api_port            = 4443,
-  String
-    $web_hostname        = 'example.org',
-  String
-    $mailer_from         = 'noreply@example.org',
-  Hash
-    $database_config     = {},
-  Pattern[/^ruby\d+/]
-    $ruby_scl            = 'ruby27',
-  Boolean
-    $use_shorewall       = false,
-  Optional[Array[String]]
-    $superadmins         = [],
-){
+class schleuder::web (
+  String $api_key,
+  String $api_tls_fingerprint = $facts['schleuder_tls_fingerprint'],
+  String $api_host = 'localhost',
+  Integer $api_port = 4443,
+  String $web_hostname = 'example.org',
+  String $mailer_from = 'noreply@example.org',
+  Hash $database_config = {},
+  Pattern[/^ruby\d+/] $ruby_scl = 'ruby27',
+  Boolean $use_shorewall = false,
+  Optional[Array[String]] $superadmins = [],
+) {
   require "scl::${ruby_scl}"
-  package{'schleuder-web':
+  package { 'schleuder-web':
     ensure => present,
-  } -> file{
+  } -> file {
     '/var/www/schleuder-web/config/database.yml':
       content => template('schleuder/web/database.yml.erb'),
       owner   => root,
@@ -35,7 +25,7 @@ class schleuder::web(
       owner   => root,
       group   => 'schleuder-web',
       mode    => '0640';
-  } ~> exec{'setup-schleuder-web':
+  } ~> exec { 'setup-schleuder-web':
     command     => "scl enable rh-${ruby_scl} 'bundle exec rake db:setup RAILS_ENV=production SCHLEUDER_TLS_FINGERPRINT=stubvalue SCHLEUDER_API_KEY=stubvalue SECRET_KEY_BASE=stubvalue SCHLEUDER_API_HOST=somehost SCHLEUDER_WEB_HOSTNAME=somehost'",
     cwd         => '/var/www/schleuder-web',
     refreshonly => true,
