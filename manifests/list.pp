@@ -17,9 +17,9 @@ define schleuder::list (
     $list_name:
       ensure => $ensure,
   }
+  $parts = split($list_name,'@')
   if $ensure == present {
     if $schleuder::gpg_use_tor {
-      $parts = split($list_name,'@')
       # every gnupg homedir needs this config
       file { "/var/lib/schleuder/lists/${parts[1]}/${parts[0]}/dirmngr.conf":
         source  => '/var/lib/schleuder/.gnupg/dirmngr.conf',
@@ -77,6 +77,14 @@ define schleuder::list (
         refreshonly => true,
         subscribe   => Schleuder_list[$list_name],
       }
+    }
+  } else {
+    file { "/var/lib/schleuder/lists/${parts[1]}/${parts[0]}":
+      ensure  => absent,
+      recurse => true,
+      force   => true,
+      purge   => true,
+      require => Schleuder_list[$list_name],
     }
   }
 }
