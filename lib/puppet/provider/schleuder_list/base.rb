@@ -7,7 +7,7 @@ require 'tempfile'
 
 Puppet::Type.type(:schleuder_list).provide(:base) do
   has_command(:cli, '/usr/bin/schleuder-cli') do
-    environment({ 'HOME' => ENV['HOME'] })
+    environment({ 'HOME' => (ENV['HOME'] || '/root') })
   end
 
   mk_resource_methods
