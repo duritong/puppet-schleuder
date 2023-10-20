@@ -59,6 +59,8 @@ define schleuder::list (
           }
         }
       }
+    } else {
+      $real_admin_publickey = $admin_publickey
     }
 
     if $admin_publickey_missing and !$admin_publickey_from_wkd {
